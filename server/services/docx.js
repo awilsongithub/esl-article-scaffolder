@@ -164,7 +164,7 @@ export async function buildDocx({
   // Larger print for younger readers. Sizes are in half-points.
   const size = levelId === "k" ? 32 : 24;
   const doc = new Document({
-    creator: "ESL Article Leveler",
+    creator: "ESL Article Scaffolder",
     title: `${content.title || originalTitle} (${level.label})`,
     styles: { default: { document: { run: { font: "Arial", size } } } },
     sections: [{ properties: {}, children }],

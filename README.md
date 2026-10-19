@@ -1,4 +1,4 @@
-# ESL Article Leveler
+# ESL Article Scaffolder
 
 Upload an English article and get three editable Word files for ESL learners. There is one file each for **Kindergarten**, **Grade 5** and **Grade 10**, and each file contains:
 

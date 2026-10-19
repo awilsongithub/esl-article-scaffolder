@@ -1,5 +1,5 @@
 {
-  "name": "esl-article-leveler",
+  "name": "esl-article-scaffolder",
   "version": "1.0.0",
   "description": "Turn an article into leveled ESL reading packs (K, Grade 5, Grade 10) with glossary and questions.",
   "main": "server/index.js",
