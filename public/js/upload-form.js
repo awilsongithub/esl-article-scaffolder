@@ -101,24 +101,35 @@ function updatePastedWordCount() {
  * Returns an error message, or null when the form looks valid. The server checks everything again.
  */
 function validateFormBeforeUpload(form) {
-  const { limits } = appState.config;
-  if (form.mode.value === "paste") {
-    const text = form.text.value.trim();
-    if (!text) return "Please paste the article text.";
-    const words = countWords(text);
-    if (words > limits.maxWords)
-      return `This article has ${words.toLocaleString()} words. The limit is ${limits.maxWords.toLocaleString()} words.`;
-  } else {
-    const file = form.file.files[0];
-    if (!file) return "Please choose a file to upload.";
-    const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-    if (!limits.allowedExtensions.includes(extension))
-      return `Unsupported file type. Please upload ${limits.allowedExtensions.join(", ")}.`;
-    if (file.size > limits.maxFileBytes)
-      return `File is too large. The limit is ${limits.maxFileBytes / 1024 / 1024} MB.`;
-  }
+  const sourceProblem =
+    form.mode.value === "paste"
+      ? validatePastedText(form.text.value.trim())
+      : validateUploadedFile(form.file.files[0]);
+  if (sourceProblem) return sourceProblem;
   if (form.translate.checked && !form.language.value)
     return "Please choose a translation language.";
+  return null;
+}
+
+/** Returns an error message if the pasted text is empty or over the word limit, else null. */
+function validatePastedText(text) {
+  const { maxWords } = appState.config.limits;
+  if (!text) return "Please paste the article text.";
+  const words = countWords(text);
+  if (words > maxWords)
+    return `This article has ${words.toLocaleString()} words. The limit is ${maxWords.toLocaleString()} words.`;
+  return null;
+}
+
+/** Returns an error message if no file is chosen, or its type or size isn't allowed, else null. */
+function validateUploadedFile(file) {
+  const { allowedExtensions, maxFileBytes } = appState.config.limits;
+  if (!file) return "Please choose a file to upload.";
+  const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+  if (!allowedExtensions.includes(extension))
+    return `Unsupported file type. Please upload ${allowedExtensions.join(", ")}.`;
+  if (file.size > maxFileBytes)
+    return `File is too large. The limit is ${maxFileBytes / 1024 / 1024} MB.`;
   return null;
 }
 

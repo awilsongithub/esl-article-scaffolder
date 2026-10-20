@@ -154,28 +154,28 @@ function buildLevelCardActions(article, level, isBusy) {
     ? createElement("a", { class: "button primary", href: `/api${levelPath}/download` }, "Download .docx")
     : createElement("button", { class: "primary", disabled: true }, "Download .docx");
 
-  const retryOrRegenerateButton =
-    level.status === "failed"
-      ? createElement(
-          "button",
-          {
-            class: "primary",
-            onclick: (event) =>
-              sendRetryOrRegenerate(event, level.level, article.id, `${levelPath}/retry`),
-          },
-          "Try Again",
-        )
-      : createElement(
-          "button",
-          {
-            disabled: isBusy,
-            onclick: (event) =>
-              sendRetryOrRegenerate(event, level.level, article.id, `${levelPath}/regenerate`),
-          },
-          "Regenerate",
-        );
+  const retryOrRegenerateButton = buildRetryOrRegenerateButton(article, level, isBusy);
 
   return createElement("div", { class: "actions" }, previewButton, downloadButton, retryOrRegenerateButton);
+}
+
+/** "Try Again" for a failed level; otherwise "Regenerate" (disabled while the level is busy). */
+function buildRetryOrRegenerateButton(article, level, isBusy) {
+  const levelPath = `/articles/${article.id}/levels/${level.level}`;
+  const isFailed = level.status === "failed";
+  const action = isFailed ? "retry" : "regenerate";
+  const sendAction = (event) =>
+    sendRetryOrRegenerate(event, level.level, article.id, `${levelPath}/${action}`);
+
+  return createElement(
+    "button",
+    {
+      class: isFailed ? "primary" : null,
+      disabled: !isFailed && isBusy,
+      onclick: sendAction,
+    },
+    isFailed ? "Try Again" : "Regenerate",
+  );
 }
 
 /** Opens the preview for a level, or closes it if it is already open, then re-renders the page. */
