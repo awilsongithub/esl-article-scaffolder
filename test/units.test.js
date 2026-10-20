@@ -1,8 +1,24 @@
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
 import { ARTICLE_TEXT, budget, close, getDb, prompt, repo, seedArticle } from './helpers.js';
+import { buildDocx } from '../server/services/docx.js';
+import { ExtractError, deriveTitle, extractText } from '../server/services/extract.js';
 
 after(close);
+
+test('extractText reads .docx, rejects unknown types and empty files', async () => {
+  const content = { title: 'Water', paragraphs: ['Water moves.'], glossary: [], multipleChoice: [], shortAnswer: [] };
+  const docx = await buildDocx({ content, levelId: 'g5', originalTitle: 'Water', translationLanguage: null });
+  assert.match(await extractText(docx, 'lesson.DOCX'), /Water moves\./);
+  await assert.rejects(extractText(Buffer.from('x'), 'notes.rtf'), ExtractError);
+  await assert.rejects(extractText(Buffer.from(' \n '), 'empty.txt'), /No text found in this file/);
+});
+
+test('deriveTitle: heading, then short first line, then filename', () => {
+  assert.equal(deriveTitle('Intro\n# Real Title\nBody', 'a.txt'), 'Real Title');
+  assert.equal(deriveTitle('Short line\nBody', 'a.txt'), 'Short line');
+  assert.equal(deriveTitle(`${'word '.repeat(20)}\nBody`, 'notes.txt'), 'notes');
+});
 
 test('claimLevels: parallel claims of one failed row → exactly one winner', async () => {
   const id = await seedArticle();

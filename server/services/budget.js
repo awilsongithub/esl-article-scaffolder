@@ -63,8 +63,7 @@ export function release(amount) {
 }
 
 export async function recordUsage({ articleId, level, model, usage, durationMs }) {
-  const inputTokens =
-    (usage.input_tokens ?? 0) + (usage.cache_creation_input_tokens ?? 0) + (usage.cache_read_input_tokens ?? 0);
+  const inputTokens = totalInputTokens(usage);
   const outputTokens = usage.output_tokens ?? 0;
   await repo.addUsage({
     day: today(),
@@ -81,4 +80,13 @@ export async function recordUsage({ articleId, level, model, usage, durationMs }
 export async function todaySummary() {
   const spent = await repo.getSpendForDay(today());
   return { spentUsd: Number(spent.toFixed(4)), capUsd: config.dailyBudgetUsd };
+}
+
+/** Cache writes and reads are billed as input too, so they count toward the input total. */
+function totalInputTokens(usage) {
+  return (
+    (usage.input_tokens ?? 0) +
+    (usage.cache_creation_input_tokens ?? 0) +
+    (usage.cache_read_input_tokens ?? 0)
+  );
 }
