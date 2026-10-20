@@ -94,6 +94,11 @@ export async function post(p) {
   return { status: res.status, body: await res.json().catch(() => null) };
 }
 
+export async function postForm(p, formData) {
+  const res = await fetch(`${base}${p}`, { method: "POST", body: formData });
+  return { status: res.status, body: await res.json().catch(() => null) };
+}
+
 export async function close() {
   await jobs.whenIdle();
   await new Promise((r) => server.close(r));
