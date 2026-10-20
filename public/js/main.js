@@ -16,38 +16,41 @@ let searchTimer;
  * REACT: replaced by React Router.
  */
 function showViewForCurrentHash() {
-  cancelPolling();
-  const articleMatch = location.hash.match(/^#\/articles\/(\d+)/);
-  findElement("#view-home").hidden = Boolean(articleMatch);
-  findElement("#view-detail").hidden = !articleMatch;
-  if (articleMatch) {
-    appState.openPreviewLevel = null;
-    appState.actionErrors = {};
-    renderArticleDetail(Number(articleMatch[1]));
-  } else {
-    renderArticleList();
-  }
-  window.scrollTo(0, 0);
+    cancelPolling();
+    const articleMatch = location.hash.match(/^#\/articles\/(\d+)/);
+    findElement("#view-home").hidden = Boolean(articleMatch);
+    findElement("#view-detail").hidden = !articleMatch;
+    if (articleMatch) {
+        appState.openPreviewLevel = null;
+        appState.actionErrors = {};
+        renderArticleDetail(Number(articleMatch[1]));
+    } else {
+        renderArticleList();
+    }
+    window.scrollTo(0, 0);
 }
 
 /** Re-runs the article search a moment after the user stops typing. */
 function searchArticlesAfterTypingPause() {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(renderArticleList, SEARCH_DELAY_MS);
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(renderArticleList, SEARCH_DELAY_MS);
 }
 
 /** Loads /api/config, sets up the form and listeners, and shows the first view. */
 async function startApp() {
-  appState.config = await requestApi("/config");
-  setupUploadForm();
-  findElement("#search").addEventListener("input", searchArticlesAfterTypingPause);
-  window.addEventListener("hashchange", showViewForCurrentHash);
-  showViewForCurrentHash();
-  refreshUsageFooter();
+    appState.config = await requestApi("/config");
+    setupUploadForm();
+    findElement("#search").addEventListener(
+        "input",
+        searchArticlesAfterTypingPause,
+    );
+    window.addEventListener("hashchange", showViewForCurrentHash);
+    showViewForCurrentHash();
+    refreshUsageFooter();
 }
 
 startApp().catch((err) => {
-  findElement("#app").replaceChildren(
-    createErrorMessage(`Could not load the app: ${err.message}`),
-  );
+    findElement("#app").replaceChildren(
+        createErrorMessage(`Could not load the app: ${err.message}`),
+    );
 });

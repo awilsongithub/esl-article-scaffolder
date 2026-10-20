@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
-    "test": "node --test \"test/*.test.js\""
+    "test": "node --test \"test/*.test.js\"",
+    "format": "prettier --write \"server/**/*.js\" \"public/**/*.{js,css,html}\" \"test/*.js\""
   },
   "type": "module",
   "dependencies": {
@@ -24,5 +25,8 @@
   "allowScripts": {
     "sqlite3@6.0.1": true
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "prettier": "3.9.10"
+  }
 }

@@ -1,89 +1,159 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ESL Article Scaffolder</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <header class="site-header">
-    <a href="#/" class="brand">ESL Article Scaffolder</a>
-    <p class="tagline">One article → Kindergarten, Grade 5 and Grade 10 reading packs with glossary and questions.</p>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ESL Article Scaffolder</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="#/" class="brand">ESL Article Scaffolder</a>
+      <p class="tagline">
+        One article → Kindergarten, Grade 5 and Grade 10 reading packs with
+        glossary and questions.
+      </p>
+    </header>
 
-  <main id="app">
-    <!-- Home view: upload form + article list -->
-    <section id="view-home">
-      <section class="card">
-        <h2>New article</h2>
-        <form id="upload-form" novalidate>
-          <div class="mode-toggle" role="radiogroup" aria-label="How to add the article">
-            <label><input type="radio" name="mode" value="file" checked> Upload file</label>
-            <label><input type="radio" name="mode" value="paste"> Paste text</label>
-          </div>
-
-          <div id="file-field" class="field">
-            <label for="file">Article file <span class="hint">PDF, Word (.docx), .txt or .md · max 20,000 words</span></label>
-            <input type="file" id="file" name="file" accept=".pdf,.docx,.txt,.md">
-          </div>
-
-          <div id="paste-field" class="field" hidden>
-            <label for="text">Article text <span class="hint" id="text-count"></span></label>
-            <textarea id="text" name="text" rows="10" placeholder="Paste the article here…"></textarea>
-          </div>
-
-          <div class="row">
-            <div class="field">
-              <label for="title">Title <span class="hint">optional</span></label>
-              <input type="text" id="title" name="title" placeholder="Taken from the article if left blank">
+    <main id="app">
+      <!-- Home view: upload form + article list -->
+      <section id="view-home">
+        <section class="card">
+          <h2>New article</h2>
+          <form id="upload-form" novalidate>
+            <div
+              class="mode-toggle"
+              role="radiogroup"
+              aria-label="How to add the article"
+            >
+              <label
+                ><input type="radio" name="mode" value="file" checked /> Upload
+                file</label
+              >
+              <label
+                ><input type="radio" name="mode" value="paste" /> Paste
+                text</label
+              >
             </div>
-            <div class="field">
-              <label for="uploaded_by">Uploaded by <span class="hint">optional</span></label>
-              <input type="text" id="uploaded_by" name="uploaded_by" placeholder="Your name" autocomplete="name">
+
+            <div id="file-field" class="field">
+              <label for="file"
+                >Article file
+                <span class="hint"
+                  >PDF, Word (.docx), .txt or .md · max 20,000 words</span
+                ></label
+              >
+              <input
+                type="file"
+                id="file"
+                name="file"
+                accept=".pdf,.docx,.txt,.md"
+              />
             </div>
+
+            <div id="paste-field" class="field" hidden>
+              <label for="text"
+                >Article text <span class="hint" id="text-count"></span
+              ></label>
+              <textarea
+                id="text"
+                name="text"
+                rows="10"
+                placeholder="Paste the article here…"
+              ></textarea>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="title"
+                  >Title <span class="hint">optional</span></label
+                >
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="Taken from the article if left blank"
+                />
+              </div>
+              <div class="field">
+                <label for="uploaded_by"
+                  >Uploaded by <span class="hint">optional</span></label
+                >
+                <input
+                  type="text"
+                  id="uploaded_by"
+                  name="uploaded_by"
+                  placeholder="Your name"
+                  autocomplete="name"
+                />
+              </div>
+            </div>
+
+            <details class="options">
+              <summary>Glossary &amp; question options</summary>
+              <table class="counts">
+                <thead>
+                  <tr>
+                    <th>Level</th>
+                    <th>Glossary terms</th>
+                    <th>Questions</th>
+                  </tr>
+                </thead>
+                <tbody id="counts-body"></tbody>
+              </table>
+              <p class="hint">
+                Choose 0 to leave a section out. Grade 5 and Grade 10 mix
+                multiple-choice and short-answer questions; Kindergarten is
+                multiple choice only.
+              </p>
+            </details>
+
+            <div class="field translate">
+              <label class="inline"
+                ><input type="checkbox" id="translate" name="translate" /> Add
+                glossary translation</label
+              >
+              <select
+                id="language"
+                name="language"
+                hidden
+                aria-label="Translation language"
+              ></select>
+            </div>
+
+            <p id="form-error" class="error" role="alert" hidden></p>
+            <button type="submit" id="submit-btn" class="primary">
+              Create leveled versions
+            </button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="list-header">
+            <h2>Articles</h2>
+            <input
+              type="search"
+              id="search"
+              placeholder="Search by title or uploader…"
+              aria-label="Search articles"
+            />
           </div>
-
-          <details class="options">
-            <summary>Glossary &amp; question options</summary>
-            <table class="counts">
-              <thead><tr><th>Level</th><th>Glossary terms</th><th>Questions</th></tr></thead>
-              <tbody id="counts-body"></tbody>
-            </table>
-            <p class="hint">Choose 0 to leave a section out. Grade 5 and Grade 10 mix multiple-choice and short-answer questions; Kindergarten is multiple choice only.</p>
-          </details>
-
-          <div class="field translate">
-            <label class="inline"><input type="checkbox" id="translate" name="translate"> Add glossary translation</label>
-            <select id="language" name="language" hidden aria-label="Translation language"></select>
-          </div>
-
-          <p id="form-error" class="error" role="alert" hidden></p>
-          <button type="submit" id="submit-btn" class="primary">Create leveled versions</button>
-        </form>
+          <ul id="article-list" class="article-list"></ul>
+          <p id="empty-list" class="muted" hidden>No articles yet.</p>
+        </section>
       </section>
 
-      <section class="card">
-        <div class="list-header">
-          <h2>Articles</h2>
-          <input type="search" id="search" placeholder="Search by title or uploader…" aria-label="Search articles">
-        </div>
-        <ul id="article-list" class="article-list"></ul>
-        <p id="empty-list" class="muted" hidden>No articles yet.</p>
+      <!-- Detail view: one article and its files -->
+      <section id="view-detail" hidden>
+        <a href="#/" class="back">← All articles</a>
+        <div id="detail"></div>
       </section>
-    </section>
+    </main>
 
-    <!-- Detail view: one article and its files -->
-    <section id="view-detail" hidden>
-      <a href="#/" class="back">← All articles</a>
-      <div id="detail"></div>
-    </section>
-  </main>
+    <footer class="site-footer">
+      <span id="usage">Today's usage: …</span>
+    </footer>
 
-  <footer class="site-footer">
-    <span id="usage">Today's usage: …</span>
-  </footer>
-
-  <script src="js/main.js" type="module"></script>
-</body>
+    <script src="js/main.js" type="module"></script>
+  </body>
 </html>

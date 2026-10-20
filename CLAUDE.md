@@ -26,7 +26,8 @@
 - Keep the `// REACT:`, `// POSTGRES:`, `// LOGIN:`, `// DRIVE:` migration markers.
 
 ## Project conventions
-- Formatting: Prettier defaults (double quotes, trailing commas).
+- Formatting: Prettier, configured in `.prettierrc.json` and `.editorconfig`: 4-space indent
+  in JS, 2 spaces in CSS / HTML / JSON / Markdown, double quotes. Run `npm run format`.
 - Server: Express 5, async handlers throw; errors are mapped in server/app.js.
   All SQL lives in server/db/repo.js. Prompts live in server/services/prompt.js.
 - Frontend: vanilla ES modules in public/js/, no build step. Build DOM with
