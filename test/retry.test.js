@@ -181,4 +181,23 @@ describe('server retry policy', () => {
       assert.equal(await levelStatus(id, 'g5'), 'failed');
     });
   }
+
+  test('retry skipped when the daily limit is reached after the first attempt', async () => {
+    const id = await seedArticle();
+    fake.reset(async () => {
+      await repo.addUsage({ day: budget.today(), articleId: null, level: null, model: 'x', inputTokens: 0, outputTokens: 0, costUsd: 1 });
+      return response('not json{');
+    });
+    try {
+      await post(`/articles/${id}/levels/g5/retry`);
+      await jobs.whenIdle();
+      assert.equal(fake.calls, 1);
+      const row = await repo.getLevelOutput(id, 'g5');
+      assert.equal(row.status, 'failed');
+      assert.match(row.error, /unreadable.*Retry skipped: daily limit reached/);
+      assert.equal(budget.reservedTotal(), 0);
+    } finally {
+      await getDb().run('DELETE FROM usage WHERE article_id IS NULL');
+    }
+  });
 });
