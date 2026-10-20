@@ -1,0 +1,3 @@
+# Formatting-only commits, skipped by git blame (git config blame.ignoreRevsFile .git-blame-ignore-revs)
+# Prettier: 4-space indent in JS
+db532c9f16bd25382e5fc41534deb65191798f27
