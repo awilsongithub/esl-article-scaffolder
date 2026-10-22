@@ -21,7 +21,9 @@ import {
 after(close);
 beforeEach(() => fake.reset());
 
+/** The budget one model call reserves for ARTICLE_TEXT. */
 const perCall = () => budget.estimateCallUsd(ARTICLE_TEXT);
+/** Whether two USD amounts are equal, allowing for float rounding. */
 const close2 = (a, b) => Math.abs(a - b) < 1e-9;
 
 describe("POST /articles/:id/levels/:level/retry", () => {
@@ -153,7 +155,8 @@ describe("double-click race", () => {
         const statuses = results.map((r) => r.status).sort();
         assert.deepEqual(statuses, [202, 409, 409, 409, 409]);
 
-        // Let the winning job reach the model, then check only one call holds budget.
+        // Let the winning job reach the model,
+        // then check only one call holds budget.
         while (fake.calls === 0) await new Promise((r) => setImmediate(r));
         assert.equal(fake.calls, 1);
         assert.ok(

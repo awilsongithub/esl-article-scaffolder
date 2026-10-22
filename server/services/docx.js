@@ -16,7 +16,10 @@ const LARGE_PRINT_LEVELS = new Set(["k"]);
 
 // --- Building blocks used throughout this file ---
 
-/** A section heading (Heading 2) with standard spacing; `options` can override any paragraph setting. */
+/**
+ * A section heading (Heading 2) with standard spacing.
+ * `options` can override any paragraph setting.
+ */
 function heading(text, options = {}) {
     return new Paragraph({
         text,
@@ -26,7 +29,10 @@ function heading(text, options = {}) {
     });
 }
 
-/** A body paragraph made of text runs, with standard spacing; `options` can override it. */
+/**
+ * A body paragraph made of text runs, with standard spacing.
+ * `options` can override it.
+ */
 function paragraph(textRuns, options = {}) {
     return new Paragraph({
         children: textRuns,
@@ -35,7 +41,10 @@ function paragraph(textRuns, options = {}) {
     });
 }
 
-/** A piece of text inside a paragraph; `options` sets bold, italics, colour, etc. */
+/**
+ * A piece of text inside a paragraph.
+ * `options` sets bold, italics, colour, etc.
+ */
 function textRun(text, options = {}) {
     return new TextRun({ text, ...options });
 }
@@ -94,7 +103,10 @@ function createReadingSection(paragraphs) {
     ];
 }
 
-/** Glossary heading plus each term; empty when there is no glossary. */
+/**
+ * Glossary heading plus each term.
+ * Empty when there is no glossary.
+ */
 function createGlossarySection(glossary, translationLanguage) {
     if (!glossary.length) return [];
     const title = translationLanguage
@@ -108,7 +120,10 @@ function createGlossarySection(glossary, translationLanguage) {
     ];
 }
 
-/** One term: "term — definition", the optional translation, and an example sentence. */
+/**
+ * One glossary term: "term — definition", the optional translation,
+ * and an example sentence.
+ */
 function createGlossaryEntry(entry, translationLanguage) {
     const definition = paragraph(
         [
@@ -137,7 +152,10 @@ function createGlossaryEntry(entry, translationLanguage) {
     return [definition, translation, example].filter(Boolean);
 }
 
-/** Questions heading, multiple choice (if any), then short answer (if any); empty when there are none. */
+/**
+ * Questions heading, multiple choice (if any), then short answer (if any).
+ * Empty when there are no questions.
+ */
 function createQuestionsSection({ multipleChoice, shortAnswer }) {
     if (!multipleChoice.length && !shortAnswer.length) return [];
     return [
@@ -147,7 +165,7 @@ function createQuestionsSection({ multipleChoice, shortAnswer }) {
     ];
 }
 
-/** "Circle the best answer." followed by each question and its lettered options. */
+/** "Circle the best answer.", then each question and its options. */
 function createMultipleChoiceQuestions(questions) {
     if (!questions.length) return [];
     return [
@@ -161,7 +179,10 @@ function createMultipleChoiceQuestions(questions) {
     ];
 }
 
-/** One lettered option. All but the last stay on the same page as the next line. */
+/**
+ * One lettered option.
+ * All but the last stay on the same page as the next line.
+ */
 function createAnswerOption(option, index) {
     return paragraph([textRun(`${OPTION_LETTERS[index]}.  ${option}`)], {
         indent: { left: INDENT_TWIPS },
@@ -170,7 +191,7 @@ function createAnswerOption(option, index) {
     });
 }
 
-/** "Answer in full sentences." followed by each question and blank lines to write on. */
+/** "Answer in full sentences.", then each question and lines to write on. */
 function createShortAnswerQuestions(questions) {
     if (!questions.length) return [];
     const instructions = paragraph(
@@ -197,7 +218,10 @@ function createAnswerLines() {
     );
 }
 
-/** A bold numbered question, kept on the same page as its options or answer lines. */
+/**
+ * A bold numbered question,
+ * kept on the same page as its options or answer lines.
+ */
 function createQuestionPrompt(question) {
     return paragraph(
         [textRun(`${question.number}. ${question.question}`, { bold: true })],
@@ -208,7 +232,10 @@ function createQuestionPrompt(question) {
     );
 }
 
-/** Answer key on its own page, so teachers can remove it before copying. Empty when there are no questions. */
+/**
+ * Answer key on its own page, so teachers can remove it before copying.
+ * Empty when there are no questions.
+ */
 function createAnswerKey({ multipleChoice, shortAnswer }) {
     if (!multipleChoice.length && !shortAnswer.length) return [];
     const multipleChoiceAnswers = multipleChoice.map((question) => {
@@ -250,7 +277,10 @@ function createAnswerKeyLine(number, answerText, spacingAfter) {
 
 // --- Helpers ---
 
-/** Numbers all questions in order (multiple choice first, then short answer), so every section agrees. */
+/**
+ * Numbers all questions in order (multiple choice first, then short
+ * answer), so every section agrees.
+ */
 function numberQuestions({ multipleChoice, shortAnswer }) {
     return {
         multipleChoice: multipleChoice.map((question, index) => ({

@@ -132,7 +132,8 @@ test("buildPrompt: level guidance, article wrapper, schema follows translation",
         counts,
         translationLanguage: "Spanish",
     });
-    assert.match(g10.messages[0].content, /exactly 3 questions/); // 5 questions → 3 MC + 2 short answer
+    // 5 questions → 3 MC + 2 short answer
+    assert.match(g10.messages[0].content, /exactly 3 questions/);
     assert.match(g10.messages[0].content, /in Spanish/);
     assert.ok(
         g10.outputFormat.schema.properties.glossary.items.properties

@@ -1,4 +1,5 @@
-// Golden tests: pin the exact Word XML and prompt text, so refactors can't change output by accident.
+// Golden tests: pin the exact Word XML and prompt text,
+// so refactors can't change output by accident.
 // After an intended output change, regenerate with: UPDATE_GOLDEN=1 npm test
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -15,6 +16,10 @@ const FIXTURES = path.join(
 );
 const UPDATE = process.env.UPDATE_GOLDEN === "1";
 
+/**
+ * Asserts `actual` equals the saved fixture `name`.
+ * Writes the fixture first when it's missing or UPDATE_GOLDEN=1.
+ */
 function matchesGolden(name, actual) {
     const file = path.join(FIXTURES, name);
     if (UPDATE || !fs.existsSync(file)) {

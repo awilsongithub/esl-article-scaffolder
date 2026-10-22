@@ -7,8 +7,14 @@ import { config } from "../config.js";
 
 let db;
 
-// POSTGRES: replace with `new pg.Pool({ connectionString: process.env.DATABASE_URL })`
+// POSTGRES: replace with
+// `new pg.Pool({ connectionString: process.env.DATABASE_URL })`
 // and run schema.sql through a migration tool instead of on every start.
+/**
+ * Opens the SQLite database and applies schema.sql.
+ * Also adds columns that older databases are missing.
+ * Returns the database.
+ */
 export async function initDb() {
     await fs.mkdir(path.dirname(config.dbPath), { recursive: true });
     db = await open({ filename: config.dbPath, driver: sqlite3.Database });
@@ -18,13 +24,18 @@ export async function initDb() {
         "schema.sql",
     );
     await db.exec(await fs.readFile(schemaPath, "utf8"));
-    // Columns added after the first release; CREATE TABLE IF NOT EXISTS won't add them to old databases.
+    // Columns added after the first release:
+    // CREATE TABLE IF NOT EXISTS won't add them to old databases.
     const usageCols = await db.all("PRAGMA table_info(usage)");
     if (!usageCols.some((c) => c.name === "duration_ms"))
         await db.exec("ALTER TABLE usage ADD COLUMN duration_ms INTEGER");
     return db;
 }
 
+/**
+ * Returns the open database.
+ * Throws if initDb() hasn't run yet.
+ */
 export function getDb() {
     if (!db) throw new Error("Database not initialized");
     return db;

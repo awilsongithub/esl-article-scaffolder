@@ -5,7 +5,10 @@ import { createElement, findElement } from "./dom.js";
 import { createStatusBadge, formatSqliteDate } from "./format.js";
 import { schedulePolling } from "./polling.js";
 
-/** Loads articles (filtered by the search box) and renders the list. Polls while any are processing. */
+/**
+ * Loads articles (filtered by the search box) and renders the list.
+ * Polls while any are processing.
+ */
 export async function renderArticleList() {
     const query = findElement("#search").value.trim();
     const list = findElement("#article-list");
@@ -37,7 +40,10 @@ export async function renderArticleList() {
     }
 }
 
-/** Builds one list row: title, "uploaded by · date · words", and the status badge, linking to the detail view. */
+/**
+ * Builds one list row, linking to the detail view:
+ * title, "uploaded by · date · words", and the status badge.
+ */
 function buildArticleListItem(article) {
     const metaText = [
         `Uploaded by ${article.uploadedBy || "—"}`,

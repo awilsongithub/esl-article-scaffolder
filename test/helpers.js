@@ -1,5 +1,7 @@
-// Shared setup: a throwaway data folder, a fake Claude client and a running app.
-// Env vars must be set before any server module is imported, so modules are loaded dynamically.
+// Shared setup: a throwaway data folder, a fake Claude client
+// and a running app.
+// Env vars must be set before any server module is imported,
+// so modules are loaded dynamically.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -21,6 +23,10 @@ const { parseOptions } = await import("../server/services/validate.js");
 export const ARTICLE_TEXT =
     "The water cycle moves water around the Earth. Water evaporates, forms clouds and falls as rain.";
 
+/**
+ * Stands in for the Anthropic client.
+ * `handler` decides each response; `calls` counts them.
+ */
 export const fake = {
     calls: 0,
     handler: async () => validResponse(),
@@ -34,6 +40,7 @@ export const fake = {
             }),
         },
     },
+    /** Zeroes the call count and sets how the next calls respond. */
     reset(handler = async () => validResponse()) {
         this.calls = 0;
         this.handler = handler;
@@ -41,6 +48,7 @@ export const fake = {
 };
 leveler.setClientForTests(fake);
 
+/** A model response holding a small, valid level. */
 export function validResponse() {
     return response(
         JSON.stringify({
@@ -65,6 +73,7 @@ export function validResponse() {
     );
 }
 
+/** A fake model response whose text block is `text`. */
 export function response(text, stopReason = "end_turn") {
     return {
         model: "claude-sonnet-5-5",
@@ -74,6 +83,7 @@ export function response(text, stopReason = "end_turn") {
     };
 }
 
+/** A promise plus its resolve and reject, so a test can settle it later. */
 export function deferred() {
     let resolve;
     let reject;
@@ -89,23 +99,29 @@ const server = createApp().listen(0);
 await new Promise((r) => server.once("listening", r));
 const base = `http://127.0.0.1:${server.address().port}/api`;
 
+/** POSTs to the test server's `/api{p}` and returns { status, body }. */
 export async function post(p) {
     const res = await fetch(`${base}${p}`, { method: "POST" });
     return { status: res.status, body: await res.json().catch(() => null) };
 }
 
+/** Like post(), with `formData` as the multipart body. */
 export async function postForm(p, formData) {
     const res = await fetch(`${base}${p}`, { method: "POST", body: formData });
     return { status: res.status, body: await res.json().catch(() => null) };
 }
 
+/** Waits for running jobs, stops the server and deletes the data folder. */
 export async function close() {
     await jobs.whenIdle();
     await new Promise((r) => server.close(r));
     fs.rmSync(process.env.DATA_DIR, { recursive: true, force: true });
 }
 
-// Inserts an article and puts each level straight into the given status, without calling the model.
+/**
+ * Inserts an article and puts each level straight into the given status,
+ * without calling the model.
+ */
 export async function seedArticle(
     statuses = { k: "failed", g5: "failed", g10: "failed" },
 ) {
@@ -131,7 +147,9 @@ export async function seedArticle(
     return id;
 }
 
+/** The current status of one level, read from the database. */
 export const levelStatus = async (id, level) =>
     (await repo.getLevelOutput(id, level)).status;
+/** The usage rows recorded for an article, oldest first. */
 export const usageRows = (id) =>
     getDb().all("SELECT * FROM usage WHERE article_id = ? ORDER BY id", id);

@@ -10,9 +10,16 @@ const matcher = new RegExpMatcher({
     ...englishRecommendedTransformers,
 });
 
+/**
+ * Bad form input.
+ * app.js maps it to a 400.
+ */
 export class ValidationError extends Error {}
 
-// Returns a trimmed string or null for empty optional fields.
+/**
+ * Trims and collapses whitespace, then checks length and profanity.
+ * Returns the cleaned string, or null for an empty optional field.
+ */
 export function cleanText(
     value,
     { field, maxChars, required = false, checkProfanity = true },
@@ -35,6 +42,11 @@ export function cleanText(
     return text;
 }
 
+/**
+ * A glossary-term or question count from the form.
+ * Uses `fallback` when blank.
+ * Throws unless it is a whole number from 0 to maxCount.
+ */
 function parseCount(value, fallback, label) {
     if (value === undefined || value === "") return fallback;
     const n = Number(value);
@@ -46,7 +58,10 @@ function parseCount(value, fallback, label) {
     return n;
 }
 
-// Form fields: terms_<level>, questions_<level>, translate ('on'), language.
+/**
+ * Reads the per-level counts and the translation choice from the form.
+ * Form fields: terms_<level>, questions_<level>, translate ('on'), language.
+ */
 export function parseOptions(body) {
     const counts = {};
     for (const level of LEVELS) {

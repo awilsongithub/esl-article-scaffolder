@@ -1,12 +1,16 @@
 // Usage footer and the 3-second refresh while levels are still being generated.
-// REACT: polling becomes a data hook with refetchInterval instead of setTimeout.
+// REACT: polling becomes a data hook with refetchInterval
+// instead of setTimeout.
 import { requestApi } from "./api.js";
 import { findElement } from "./dom.js";
 
 const POLL_INTERVAL_MS = 3000;
 let pollTimer;
 
-/** Loads today's spend and shows it in the page footer. Clears the footer if the request fails. */
+/**
+ * Loads today's spend and shows it in the page footer.
+ * Clears the footer if the request fails.
+ */
 export async function refreshUsageFooter() {
     const footer = findElement("#usage");
     try {
@@ -17,7 +21,11 @@ export async function refreshUsageFooter() {
     }
 }
 
-/** Runs `refreshView` (and refreshes the usage footer) once after the poll interval, replacing any pending poll. */
+/**
+ * Runs `refreshView` (and refreshes the usage footer) once after the poll
+ * interval.
+ * Replaces any poll that is already pending.
+ */
 export function schedulePolling(refreshView) {
     clearTimeout(pollTimer);
     pollTimer = setTimeout(() => {

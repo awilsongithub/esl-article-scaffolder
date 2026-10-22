@@ -1,4 +1,5 @@
-// The "New article" form: options table, input mode toggle, word counter and submit.
+// The "New article" form: options table, input mode toggle, word counter
+// and submit.
 // REACT: becomes <UploadForm />.
 import { requestApi } from "./api.js";
 import { createElement, findElement } from "./dom.js";
@@ -8,7 +9,10 @@ import { appState } from "./state.js";
 
 const SUBMIT_LABEL = "Create leveled versions";
 
-/** Wires up the upload form once /api/config has loaded: limits, options table, languages and listeners. */
+/**
+ * Wires up the upload form once /api/config has loaded:
+ * limits, options table, languages and listeners.
+ */
 export function setupUploadForm() {
     const { limits, languages } = appState.config;
     const form = findElement("#upload-form");
@@ -38,7 +42,10 @@ export function setupUploadForm() {
     form.addEventListener("submit", handleUploadSubmit);
 }
 
-/** Builds one row of the options table: level name, glossary-term count and question count. */
+/**
+ * Builds one row of the options table:
+ * level name, glossary-term count and question count.
+ */
 function buildCountsTableRow(level) {
     const termsSelect = buildCountSelect(
         `terms_${level.id}`,
@@ -74,7 +81,10 @@ function buildCountSelect(name, ariaLabel, selectedCount) {
     return createElement("select", { name, "aria-label": ariaLabel }, options);
 }
 
-/** Builds the translation-language <option>s, starting with an empty "Choose language…" choice. */
+/**
+ * Builds the translation-language <option>s,
+ * starting with an empty "Choose language…" choice.
+ */
 function buildLanguageOptions(languages) {
     const placeholder = createElement(
         "option",
@@ -87,19 +97,25 @@ function buildLanguageOptions(languages) {
     return [placeholder, ...languageOptions];
 }
 
-/** Shows the language picker only while "Add glossary translation" is ticked. */
+/** Shows the language picker only while glossary translation is ticked. */
 function toggleLanguagePicker(event) {
     findElement("#language").hidden = !event.target.checked;
 }
 
-/** Shows either the file input or the paste textarea, depending on the chosen mode. */
+/**
+ * Shows either the file input or the paste textarea,
+ * depending on the chosen mode.
+ */
 function showFieldsForInputMode(mode) {
     const isPaste = mode === "paste";
     findElement("#file-field").hidden = isPaste;
     findElement("#paste-field").hidden = !isPaste;
 }
 
-/** Updates the "N / 20,000 words" counter under the textarea, turning it red over the limit. */
+/**
+ * Updates the "N / 20,000 words" counter under the textarea.
+ * Turns it red over the limit.
+ */
 function updatePastedWordCount() {
     const { maxWords } = appState.config.limits;
     const words = countWords(findElement("#text").value);
@@ -109,8 +125,10 @@ function updatePastedWordCount() {
 }
 
 /**
- * Checks the form before uploading, so obvious mistakes don't cost a round trip.
- * Returns an error message, or null when the form looks valid. The server checks everything again.
+ * Checks the form before uploading, so obvious mistakes don't cost a
+ * round trip.
+ * Returns an error message, or null when the form looks valid.
+ * The server checks everything again.
  */
 function validateFormBeforeUpload(form) {
     const sourceProblem =
@@ -123,7 +141,10 @@ function validateFormBeforeUpload(form) {
     return null;
 }
 
-/** Returns an error message if the pasted text is empty or over the word limit, else null. */
+/**
+ * Returns an error message if the pasted text is empty or over the word
+ * limit, else null.
+ */
 function validatePastedText(text) {
     const { maxWords } = appState.config.limits;
     if (!text) return "Please paste the article text.";
@@ -133,7 +154,10 @@ function validatePastedText(text) {
     return null;
 }
 
-/** Returns an error message if no file is chosen, or its type or size isn't allowed, else null. */
+/**
+ * Returns an error message if no file is chosen, or its type or size
+ * isn't allowed, else null.
+ */
 function validateUploadedFile(file) {
     const { allowedExtensions, maxFileBytes } = appState.config.limits;
     if (!file) return "Please choose a file to upload.";
@@ -145,47 +169,80 @@ function validateUploadedFile(file) {
     return null;
 }
 
-/** Submit handler: validates, uploads the article, then opens its detail page. */
+/**
+ * Submit handler: validates, uploads the article,
+ * then opens its detail page.
+ */
 async function handleUploadSubmit(event) {
     event.preventDefault();
     const form = event.target;
-    const errorMessage = findElement("#form-error");
-    errorMessage.hidden = true;
+    showFormError(null);
 
     const problem = validateFormBeforeUpload(form);
     if (problem) {
-        errorMessage.textContent = problem;
-        errorMessage.hidden = false;
+        showFormError(problem);
         return;
     }
 
-    // Send only the input for the chosen mode.
-    const formData = new FormData(form);
-    if (form.mode.value === "paste") formData.delete("file");
-    else formData.delete("text");
-
-    const submitButton = findElement("#submit-btn");
-    submitButton.disabled = true;
-    submitButton.textContent = "Uploading…";
+    setSubmitButtonBusy(true);
     try {
         const { id } = await requestApi("/articles", {
             method: "POST",
-            body: formData,
+            body: buildUploadFormData(form),
         });
-        browserStorage.set("uploadedBy", form.uploaded_by.value.trim());
-        resetUploadForm(form);
-        location.hash = `#/articles/${id}`;
+        finishSuccessfulUpload(form, id);
     } catch (err) {
-        errorMessage.textContent = err.message;
-        errorMessage.hidden = false;
+        showFormError(err.message);
     } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = SUBMIT_LABEL;
+        setSubmitButtonBusy(false);
         refreshUsageFooter();
     }
 }
 
-/** Clears the form after a successful upload, keeping the remembered "Uploaded by" name. */
+/**
+ * Shows `message` in red above the submit button.
+ * Hides the error when `message` is null.
+ */
+function showFormError(message) {
+    const errorMessage = findElement("#form-error");
+    errorMessage.textContent = message ?? "";
+    errorMessage.hidden = !message;
+}
+
+/**
+ * Disables the submit button and shows "Uploading…" while busy.
+ * Restores it afterwards.
+ */
+function setSubmitButtonBusy(isBusy) {
+    const submitButton = findElement("#submit-btn");
+    submitButton.disabled = isBusy;
+    submitButton.textContent = isBusy ? "Uploading…" : SUBMIT_LABEL;
+}
+
+/**
+ * The form's fields, sending only the input for the chosen mode
+ * (the pasted text or the file).
+ */
+function buildUploadFormData(form) {
+    const formData = new FormData(form);
+    formData.delete(form.mode.value === "paste" ? "file" : "text");
+    return formData;
+}
+
+/**
+ * Remembers the uploader's name, clears the form,
+ * and opens the new article's page.
+ */
+function finishSuccessfulUpload(form, articleId) {
+    browserStorage.set("uploadedBy", form.uploaded_by.value.trim());
+    resetUploadForm(form);
+    location.hash = `#/articles/${articleId}`;
+}
+
+/**
+ * Clears the form after a successful upload.
+ * Keeps the remembered "Uploaded by" name.
+ */
 function resetUploadForm(form) {
     form.reset();
     findElement("#uploaded_by").value = browserStorage.get("uploadedBy") ?? "";

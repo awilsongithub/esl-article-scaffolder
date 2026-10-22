@@ -1,4 +1,5 @@
-// One article's page: header, original file, a card per level, and the open preview.
+// One article's page: header, original file, a card per level,
+// and the open preview.
 // REACT: becomes <ArticleDetail id={…} /> with <LevelCard /> children.
 import { requestApi } from "./api.js";
 import { createElement, createErrorMessage, findElement } from "./dom.js";
@@ -11,7 +12,10 @@ import { renderLevelPreview } from "./level-preview.js";
 import { refreshUsageFooter, schedulePolling } from "./polling.js";
 import { appState } from "./state.js";
 
-/** Loads an article and renders its detail page. Keeps polling while any level is still processing. */
+/**
+ * Loads an article and renders its detail page.
+ * Keeps polling while any level is still processing.
+ */
 export async function renderArticleDetail(articleId) {
     const detail = findElement("#detail");
     let article;
@@ -60,7 +64,10 @@ export async function renderArticleDetail(articleId) {
     }
 }
 
-/** Builds the title, the "uploaded by · date · words · translation" line, and the Delete button. */
+/**
+ * Builds the title, the "uploaded by · date · words · translation" line,
+ * and the Delete button.
+ */
 function buildDetailHeader(article) {
     const { translationLanguage } = article.options;
     const metaText = [
@@ -90,7 +97,10 @@ function buildDetailHeader(article) {
     );
 }
 
-/** Builds the "Original:" row: a download link for uploaded files, or a note for pasted text. */
+/**
+ * Builds the "Original:" row:
+ * a download link for uploaded files, or a note for pasted text.
+ */
 function buildOriginalFileRow(article) {
     const label = createElement("strong", {}, "Original:");
     const value = article.hasOriginalFile
@@ -103,7 +113,10 @@ function buildOriginalFileRow(article) {
     return createElement("div", { class: "original" }, label, value);
 }
 
-/** Builds the "Try again for all N failed levels" button. Only shown when more than one level failed. */
+/**
+ * Builds the "Try again for all N failed levels" button.
+ * Only shown when more than one level failed.
+ */
 function buildRetryAllFailedLevels(article) {
     const failedCount = article.levels.filter(
         (level) => level.status === "failed",
@@ -130,7 +143,10 @@ function buildRetryAllFailedLevels(article) {
     return createElement("div", { class: "retry-all" }, button, error);
 }
 
-/** Builds one level's card: heading with status, counts, loader or errors, and the action buttons. */
+/**
+ * Builds one level's card:
+ * heading with status, counts, loader or errors, and the action buttons.
+ */
 function buildLevelCard(article, level) {
     const isBusy = level.status === "pending" || level.status === "processing";
     const counts = article.options.counts[level.level];
@@ -168,7 +184,10 @@ function buildLevelCard(article, level) {
     );
 }
 
-/** Builds the spinning "Processing…" line shown while a level is being generated. */
+/**
+ * Builds the spinning "Processing…" line,
+ * shown while a level is being generated.
+ */
 function buildProcessingLoader() {
     const spinner = createElement("span", {
         class: "spinner",
@@ -182,7 +201,10 @@ function buildProcessingLoader() {
     );
 }
 
-/** Builds a level card's buttons: Preview, Download .docx, and Try Again (failed) or Regenerate. */
+/**
+ * Builds a level card's buttons:
+ * Preview, Download .docx, and Try Again (failed) or Regenerate.
+ */
 function buildLevelCardActions(article, level, isBusy) {
     const isReady = level.status === "ready";
     const isPreviewOpen = appState.openPreviewLevel === level.level;
@@ -224,7 +246,10 @@ function buildLevelCardActions(article, level, isBusy) {
     );
 }
 
-/** "Try Again" for a failed level; otherwise "Regenerate" (disabled while the level is busy). */
+/**
+ * "Try Again" for a failed level; otherwise "Regenerate".
+ * Regenerate is disabled while the level is busy.
+ */
 function buildRetryOrRegenerateButton(article, level, isBusy) {
     const levelPath = `/articles/${article.id}/levels/${level.level}`;
     const isFailed = level.status === "failed";
@@ -248,7 +273,10 @@ function buildRetryOrRegenerateButton(article, level, isBusy) {
     );
 }
 
-/** Opens the preview for a level, or closes it if it is already open, then re-renders the page. */
+/**
+ * Opens the preview for a level, or closes it if it is already open.
+ * Then re-renders the page.
+ */
 function togglePreview(articleId, levelId) {
     appState.openPreviewLevel =
         appState.openPreviewLevel === levelId ? null : levelId;
@@ -256,9 +284,11 @@ function togglePreview(articleId, levelId) {
 }
 
 /**
- * Handles Try Again / Regenerate clicks. `errorKey` is the level id, or "all" for the retry-all button.
- * The button is disabled before the request starts, so a double click can't send two requests;
- * the server's atomic claim catches anything that still gets through (409).
+ * Handles Try Again / Regenerate clicks.
+ * `errorKey` is the level id, or "all" for the retry-all button.
+ * The button is disabled before the request starts,
+ * so a double click can't send two requests.
+ * The server's atomic claim catches anything that still gets through (409).
  */
 async function sendRetryOrRegenerate(event, errorKey, articleId, path) {
     const button = event.currentTarget;
@@ -268,7 +298,8 @@ async function sendRetryOrRegenerate(event, errorKey, articleId, path) {
     try {
         await requestApi(path, { method: "POST" });
     } catch (err) {
-        // 409 means it's already running; the re-render shows that, so no error message is needed.
+        // 409 means it's already running; the re-render shows that,
+        // so no error message is needed.
         if (err.status !== 409) appState.actionErrors[errorKey] = err.message;
     }
     if (errorKey === "all" || appState.openPreviewLevel === errorKey)
@@ -277,7 +308,10 @@ async function sendRetryOrRegenerate(event, errorKey, articleId, path) {
     refreshUsageFooter();
 }
 
-/** Asks for confirmation, deletes the article and its files, then goes back to the list. */
+/**
+ * Asks for confirmation, deletes the article and its files,
+ * then goes back to the list.
+ */
 async function deleteArticleAfterConfirm(article) {
     if (
         !confirm(

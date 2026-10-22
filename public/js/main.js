@@ -1,5 +1,7 @@
-// Entry point: loads settings, wires up the page and switches views based on the URL hash.
-// Each render*/build* function maps to a future React component (see the REACT: notes in each file).
+// Entry point: loads settings, wires up the page,
+// and switches views based on the URL hash.
+// Each render*/build* function maps to a future React component
+// (see the REACT: notes in each file).
 import { requestApi } from "./api.js";
 import { renderArticleDetail } from "./article-detail.js";
 import { renderArticleList } from "./article-list.js";
@@ -12,7 +14,8 @@ const SEARCH_DELAY_MS = 250;
 let searchTimer;
 
 /**
- * Shows the view for the current hash: "#/articles/<id>" opens that article, anything else the home view.
+ * Shows the view for the current hash:
+ * "#/articles/<id>" opens that article, anything else the home view.
  * REACT: replaced by React Router.
  */
 function showViewForCurrentHash() {
@@ -36,7 +39,10 @@ function searchArticlesAfterTypingPause() {
     searchTimer = setTimeout(renderArticleList, SEARCH_DELAY_MS);
 }
 
-/** Loads /api/config, sets up the form and listeners, and shows the first view. */
+/**
+ * Loads /api/config, sets up the form and listeners,
+ * and shows the first view.
+ */
 async function startApp() {
     appState.config = await requestApi("/config");
     setupUploadForm();

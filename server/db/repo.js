@@ -1,12 +1,17 @@
-// All SQL lives in this file. Every function is async so callers don't change when the driver does.
-// POSTGRES: swap getDb() for a pg Pool; `?` placeholders → `$1, $2…`; `lastID` → `RETURNING id`;
-// datetime('now') → now(); LIKE → ILIKE for case-insensitive search.
+// All SQL lives in this file.
+// Every function is async so callers don't change when the driver does.
+// POSTGRES: swap getDb() for a pg Pool; `?` placeholders → `$1, $2…`;
+// `lastID` → `RETURNING id`; datetime('now') → now();
+// LIKE → ILIKE for case-insensitive search.
 import { getDb } from "./index.js";
 import { LEVEL_IDS } from "../config.js";
 
 // --- Articles ---
 
-/** Inserts the article and one 'pending' row per level in a single transaction. Returns the new id. */
+/**
+ * Inserts the article and one 'pending' row per level in one transaction.
+ * Returns the new id.
+ */
 export async function createArticle({
     title,
     uploadedBy,
@@ -39,6 +44,7 @@ export async function createArticle({
     });
 }
 
+/** Records where the uploaded original file was saved. */
 export async function setOriginalPath(articleId, originalPath) {
     await getDb().run(
         "UPDATE articles SET original_path = ? WHERE id = ?",
@@ -47,7 +53,10 @@ export async function setOriginalPath(articleId, originalPath) {
     );
 }
 
-/** All articles, newest first, optionally filtered by title or uploader, each with its levels. */
+/**
+ * All articles, newest first, each with its levels.
+ * With `query`, only those whose title or uploader matches.
+ */
 export async function listArticles(query) {
     const db = getDb();
     const [where, params] = query
@@ -69,7 +78,10 @@ export async function listArticles(query) {
     );
 }
 
-/** One article with its levels, in the shape the API returns; null if it doesn't exist. */
+/**
+ * One article with its levels, in the shape the API returns.
+ * Null if it doesn't exist.
+ */
 export async function getArticle(id) {
     const db = getDb();
     const row = await db.get("SELECT * FROM articles WHERE id = ?", id);
@@ -89,7 +101,10 @@ export async function getArticleInternal(id) {
     );
 }
 
-/** Deletes the article (its levels cascade). Returns whether it existed. */
+/**
+ * Deletes the article (its levels cascade).
+ * Returns whether it existed.
+ */
 export async function deleteArticle(id) {
     const { changes } = await getDb().run(
         "DELETE FROM articles WHERE id = ?",
@@ -100,6 +115,7 @@ export async function deleteArticle(id) {
 
 // --- Levels ---
 
+/** The raw level_outputs row for one level, or undefined. */
 export async function getLevelOutput(articleId, level) {
     return getDb().get(
         "SELECT * FROM level_outputs WHERE article_id = ? AND level = ?",
@@ -108,7 +124,11 @@ export async function getLevelOutput(articleId, level) {
     );
 }
 
-/** With `expectStatus`, only writes if the row is still in that status. Returns whether a row changed. */
+/**
+ * Writes a level's status and output.
+ * With `expectStatus`, only writes if the row is still in that status.
+ * Returns whether a row changed.
+ */
 export async function updateLevelOutput(
     articleId,
     level,
@@ -136,9 +156,11 @@ export async function updateLevelOutput(
 }
 
 /**
- * Atomically moves levels in one of `fromStatuses` to 'pending' and returns the levels it moved.
- * This single conditional UPDATE is the only thing that decides who gets to start a model call,
- * so two clicks (or two server processes) can never both claim the same level.
+ * Atomically moves levels in one of `fromStatuses` to 'pending'.
+ * Returns the levels it moved.
+ * This single conditional UPDATE is the only thing that decides who gets
+ * to start a model call, so two clicks (or two server processes) can never
+ * both claim the same level.
  */
 export async function claimLevels(articleId, levels, fromStatuses) {
     const rows = await getDb().all(
@@ -153,7 +175,12 @@ export async function claimLevels(articleId, levels, fromStatuses) {
     return rows.map((row) => row.level);
 }
 
-/** Jobs live in memory, so anything mid-flight when the server stopped will never finish. Returns how many were marked. */
+/**
+ * Marks levels left 'pending' or 'processing' as failed.
+ * Jobs live in memory, so anything mid-flight when the server stopped
+ * will never finish.
+ * Returns how many were marked.
+ */
 export async function failInterruptedLevels() {
     const { changes } = await getDb().run(
         `UPDATE level_outputs SET status = 'failed', error = 'Interrupted by server restart. Click Try Again.',
@@ -164,6 +191,7 @@ export async function failInterruptedLevels() {
 
 // --- Usage ---
 
+/** Records the tokens, cost and duration of one model call. */
 export async function addUsage({
     day,
     articleId,
@@ -188,6 +216,7 @@ export async function addUsage({
     );
 }
 
+/** Total USD spent on model calls on `day` (YYYY-MM-DD). */
 export async function getSpendForDay(day) {
     const row = await getDb().get(
         "SELECT COALESCE(SUM(cost_usd), 0) AS total FROM usage WHERE day = ?",
@@ -198,7 +227,10 @@ export async function getSpendForDay(day) {
 
 // --- Helpers ---
 
-/** Runs `work(db)` inside BEGIN/COMMIT, rolling back if it throws. Returns what `work` returns. */
+/**
+ * Runs `work(db)` inside BEGIN/COMMIT, rolling back if it throws.
+ * Returns what `work` returns.
+ */
 async function inTransaction(work) {
     const db = getDb();
     await db.exec("BEGIN");
@@ -228,12 +260,14 @@ function groupLevelsByArticle(levelRows) {
     return levelsByArticle;
 }
 
+/** Sorts levels in place into display order and returns them. */
 function sortLevels(levels) {
     return levels.sort(
         (a, b) => LEVEL_IDS.indexOf(a.level) - LEVEL_IDS.indexOf(b.level),
     );
 }
 
+/** Maps an articles row and its levels to the API's article shape. */
 function toArticle(row, levels) {
     return {
         id: row.id,
@@ -250,6 +284,7 @@ function toArticle(row, levels) {
     };
 }
 
+/** Maps a level_outputs row to the API's level shape. */
 function toLevel(row) {
     return {
         level: row.level,
@@ -259,7 +294,10 @@ function toLevel(row) {
     };
 }
 
-/** An article is processing while any level is, failed if any level failed, otherwise ready. */
+/**
+ * An article's overall status, from its levels:
+ * processing while any level is, failed if any level failed, else ready.
+ */
 function overallStatus(levels) {
     const statuses = levels.map((level) => level.status);
     if (

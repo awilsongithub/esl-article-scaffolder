@@ -1,4 +1,5 @@
-// In-browser preview of one generated level: article, glossary and questions with answers.
+// In-browser preview of one generated level:
+// article, glossary and questions with answers.
 // REACT: becomes <LevelPreview content={…} />.
 import { requestApi } from "./api.js";
 import { createElement, createErrorMessage } from "./dom.js";
@@ -53,7 +54,10 @@ export async function renderLevelPreview(
     container.replaceChildren(preview);
 }
 
-/** Builds the "Glossary" heading and term list, or nothing when the glossary is empty. */
+/**
+ * Builds the "Glossary" heading and term list.
+ * Empty when there is no glossary.
+ */
 function buildGlossarySection(glossary, translationLanguage) {
     if (!glossary.length) return [];
     const entries = glossary.flatMap((entry) =>
@@ -64,7 +68,10 @@ function buildGlossarySection(glossary, translationLanguage) {
     return [heading, list];
 }
 
-/** Builds the <dt>/<dd> elements for one glossary term: definition, optional translation, example. */
+/**
+ * Builds the <dt>/<dd> elements for one glossary term:
+ * definition, optional translation, example.
+ */
 function buildGlossaryEntry(entry, translationLanguage) {
     const term = createElement("dt", {}, entry.term);
     const definition = createElement("dd", {}, entry.definition);
@@ -83,7 +90,11 @@ function buildGlossaryEntry(entry, translationLanguage) {
     return [term, definition, translation, example];
 }
 
-/** Builds the numbered question list (multiple choice first, then short answer), or nothing if there are none. */
+/**
+ * Builds the numbered question list (multiple choice first, then short
+ * answer).
+ * Empty when there are no questions.
+ */
 function buildQuestionsSection(multipleChoice, shortAnswer) {
     if (!multipleChoice.length && !shortAnswer.length) return [];
     const heading = createElement("h4", {}, "Questions (with answers)");
@@ -95,7 +106,10 @@ function buildQuestionsSection(multipleChoice, shortAnswer) {
     return [heading, list];
 }
 
-/** Builds one multiple-choice question: the question, its four options and the correct answer. */
+/**
+ * Builds one multiple-choice question:
+ * the question, its four options and the correct answer.
+ */
 function buildMultipleChoiceItem(question) {
     const options = question.options.map((option) =>
         createElement("li", {}, option),

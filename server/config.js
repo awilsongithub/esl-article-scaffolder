@@ -9,7 +9,8 @@ const rootDir = path.resolve(
 // DATA_DIR lets tests use a throwaway folder for the database and files.
 const dataDir = process.env.DATA_DIR || path.join(rootDir, "data");
 
-// Reading levels are data, not code: add a level here (and a row in the UI follows).
+// Reading levels are data, not code:
+// add a level here (and a row in the UI follows).
 export const LEVELS = [
     {
         id: "k",
@@ -52,6 +53,7 @@ export const LEVELS = [
 ];
 
 export const LEVEL_IDS = LEVELS.map((l) => l.id);
+/** The level settings for an id such as "g5", or undefined. */
 export const getLevel = (id) => LEVELS.find((l) => l.id === id);
 
 export const TRANSLATION_LANGUAGES = [
@@ -82,7 +84,8 @@ export const LIMITS = {
 };
 
 // USD per 1M tokens (Anthropic first-party pricing, checked 2026-10).
-// Fallback models are listed because a declined request may be re-run on one of them.
+// Fallback models are listed because a declined request may be re-run on
+// one of them.
 export const MODEL_PRICES = {
     "claude-opus-5-5": { input: 4, output: 20 },
     "claude-opus-5": { input: 5, output: 25 },
@@ -100,9 +103,12 @@ export const config = {
         process.env.ANTHROPIC_AUTH_TOKEN ||
         process.env.ANTHROPIC_PROFILE,
     ),
-    // Caps output cost per level. 9k keeps a 20,000-word article to about $0.50 for all three levels on Sonnet 5.5.
+    // Caps output cost per level.
+    // 9k keeps a 20,000-word article to about $0.50 for all three levels
+    // on Sonnet 5.5.
     maxTokensPerLevel: 9000,
-    // Per model call. The duration log line shows how close real calls get to this.
+    // Per model call.
+    // The duration log line shows how close real calls get to this.
     modelTimeoutMs: Number(process.env.MODEL_TIMEOUT_MS) || 180_000,
     dailyBudgetUsd:
         process.env.DAILY_BUDGET_USD !== undefined

@@ -1,10 +1,15 @@
 // Local-disk file storage under data/.
-// POSTGRES/hosting: when the app moves off a single machine, swap these functions for
-// S3 / Google Cloud Storage calls and store object keys instead of local paths.
+// POSTGRES/hosting: when the app moves off a single machine, swap these
+// functions for S3 / Google Cloud Storage calls,
+// and store object keys instead of local paths.
 import fs from "node:fs/promises";
 import path from "node:path";
 import { config } from "../config.js";
 
+/**
+ * Saves the uploaded file as uploads/<id>/original.<ext>.
+ * Returns its path.
+ */
 export async function saveOriginal(articleId, buffer, filename) {
     const dir = path.join(config.uploadsDir, String(articleId));
     await fs.mkdir(dir, { recursive: true });
@@ -16,6 +21,10 @@ export async function saveOriginal(articleId, buffer, filename) {
     return filePath;
 }
 
+/**
+ * Saves a level's worksheet as outputs/<id>/<level>.docx.
+ * Returns its path.
+ */
 export async function saveOutput(articleId, level, buffer) {
     const dir = path.join(config.outputsDir, String(articleId));
     await fs.mkdir(dir, { recursive: true });
@@ -24,6 +33,7 @@ export async function saveOutput(articleId, level, buffer) {
     return filePath;
 }
 
+/** Removes an article's upload and output folders, if they exist. */
 export async function deleteArticleFiles(articleId) {
     await fs.rm(path.join(config.uploadsDir, String(articleId)), {
         recursive: true,
@@ -35,7 +45,7 @@ export async function deleteArticleFiles(articleId) {
     });
 }
 
-// Download names like "the-water-cycle-grade-5.docx".
+/** Download names like "the-water-cycle-grade-5.docx". */
 export function downloadName(title, suffix, ext) {
     const slug =
         title

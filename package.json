@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
+    "debug-server": "node --inspect --watch server/index.js",
     "test": "node --test \"test/*.test.js\"",
     "format": "prettier --write \"server/**/*.js\" \"public/**/*.{js,css,html}\" \"test/*.js\""
   },

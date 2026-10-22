@@ -1,9 +1,15 @@
-// Daily spending cap. Spend is recorded from each response's real token usage; before a job
-// starts we also hold back its worst-case cost so parallel jobs can't overshoot together.
+// Daily spending cap.
+// Spend is recorded from each response's real token usage.
+// Before a job starts we also hold back its worst-case cost,
+// so parallel jobs can't overshoot together.
 // LOGIN: add a user_id to usage rows to support per-user limits.
 import { config, MODEL_PRICES } from "../config.js";
 import * as repo from "../db/repo.js";
 
+/**
+ * The daily limit was reached.
+ * app.js maps it to a 429.
+ */
 export class BudgetError extends Error {}
 
 let reservedUsd = 0; // worst-case cost of calls currently in flight
@@ -16,11 +22,16 @@ const FALLBACK_PRICE = Object.values(MODEL_PRICES).reduce(
     { input: 0, output: 0 },
 );
 
+/**
+ * USD per 1M tokens for `model`.
+ * Unknown model ids are charged at the most expensive known rate,
+ * to stay on the safe side.
+ */
 function priceFor(model) {
-    // Unknown model ids are charged at the most expensive known rate, to stay on the safe side.
     return MODEL_PRICES[model] ?? FALLBACK_PRICE;
 }
 
+/** Today's date in the budget time zone, as YYYY-MM-DD. */
 export function today() {
     // en-CA formats as YYYY-MM-DD
     return new Intl.DateTimeFormat("en-CA", {
@@ -28,18 +39,28 @@ export function today() {
     }).format(new Date());
 }
 
+/** USD cost of a call on `model` with these token counts. */
 export function costUsd(model, inputTokens, outputTokens) {
     const p = priceFor(model);
     return (inputTokens * p.input + outputTokens * p.output) / 1_000_000;
 }
 
-// Rough token estimate (~4 chars/token) plus room for the instructions, priced at max output.
+/**
+ * Worst-case USD cost of one call for this article.
+ * Rough token estimate (~4 chars/token) plus room for the instructions,
+ * priced at the maximum output.
+ */
 export function estimateCallUsd(articleText) {
     const inputTokens = Math.ceil(articleText.length / 4) + 2000;
     return costUsd(config.model, inputTokens, config.maxTokensPerLevel);
 }
 
-// Reserves the worst case for `calls` calls, or throws BudgetError. Returns a per-call reservation.
+/**
+ * Reserves the worst-case cost of `calls` calls against today's budget.
+ * Returns the per-call reservation, to release as each call finishes.
+ * Throws BudgetError when the daily limit would be passed,
+ * or a 503 error when no API key is set.
+ */
 export async function reserve(articleText, calls) {
     if (!config.hasApiCredentials) {
         throw Object.assign(
@@ -50,7 +71,8 @@ export async function reserve(articleText, calls) {
         );
     }
     const perCall = estimateCallUsd(articleText);
-    // Hold the amount before awaiting, so parallel requests see each other's reservations.
+    // Hold the amount before awaiting,
+    // so parallel requests see each other's reservations.
     reservedUsd += perCall * calls;
     let spent;
     try {
@@ -66,12 +88,15 @@ export async function reserve(articleText, calls) {
     return perCall;
 }
 
+/** USD currently reserved for calls in flight. */
 export const reservedTotal = () => reservedUsd;
 
+/** Gives back a reservation once its call has finished or won't happen. */
 export function release(amount) {
     reservedUsd = Math.max(0, reservedUsd - amount);
 }
 
+/** Records a billed call's real token usage and cost for today. */
 export async function recordUsage({
     articleId,
     level,
@@ -93,6 +118,7 @@ export async function recordUsage({
     });
 }
 
+/** Today's spend and the daily cap, for the usage footer. */
 export async function todaySummary() {
     const spent = await repo.getSpendForDay(today());
     return {
@@ -101,7 +127,10 @@ export async function todaySummary() {
     };
 }
 
-/** Cache writes and reads are billed as input too, so they count toward the input total. */
+/**
+ * Total input tokens for a response.
+ * Cache writes and reads are billed as input too, so they count toward it.
+ */
 function totalInputTokens(usage) {
     return (
         (usage.input_tokens ?? 0) +

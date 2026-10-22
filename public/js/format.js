@@ -26,7 +26,10 @@ export function createStatusBadge(status) {
     );
 }
 
-/** Formats a SQLite datetime('now') value (UTC, no zone marker) in the viewer's local time. */
+/**
+ * Formats a SQLite datetime('now') value (UTC, no zone marker)
+ * in the viewer's local time.
+ */
 export function formatSqliteDate(sqliteDate) {
     return new Date(`${sqliteDate.replace(" ", "T")}Z`).toLocaleString(
         undefined,
@@ -39,8 +42,12 @@ export function countWords(text) {
     return text.split(/\s+/).filter(Boolean).length;
 }
 
-/** localStorage wrapper for per-viewer conveniences; never throws (private mode, blocked storage). */
+/**
+ * localStorage wrapper for per-viewer conveniences.
+ * Never throws (private mode, blocked storage).
+ */
 export const browserStorage = {
+    /** The stored value for `key`, or null. */
     get: (key) => {
         try {
             return localStorage.getItem(key);
@@ -48,6 +55,7 @@ export const browserStorage = {
             return null;
         }
     },
+    /** Stores `value` under `key`, or does nothing if storage is blocked. */
     set: (key, value) => {
         try {
             localStorage.setItem(key, value);

@@ -1,21 +1,32 @@
-// Turns source text into structured leveled content (JSON) for one reading level, using Claude.
-// The JSON is stored in the DB and rendered to .docx separately, so a future React UI can
-// render the same JSON for previews and the output format can change without new AI calls.
+// Turns source text into structured leveled content (JSON) for one reading
+// level, using Claude.
+// The JSON is stored in the DB and rendered to .docx separately,
+// so a future React UI can render the same JSON for previews,
+// and the output format can change without new AI calls.
 // The prompt itself is built in prompt.js.
 import Anthropic from "@anthropic-ai/sdk";
 import { config } from "../config.js";
 import { buildPrompt, questionSplit } from "./prompt.js";
 
-// Created on first use so the server can start (and show errors in the UI) without a key.
-// maxRetries 0: jobs.js owns the single retry, so every attempt is logged and budgeted.
 let client;
+
+/**
+ * The shared Anthropic client.
+ * Created on first use, so the server can start (and show errors in
+ * the UI) without a key.
+ * maxRetries 0: jobs.js owns the single retry, so every attempt is
+ * logged and budgeted.
+ */
 const getClient = () =>
     (client ??= new Anthropic({
         maxRetries: 0,
         timeout: config.modelTimeoutMs,
     }));
 
-/** Tests swap in a fake with the same beta.messages.stream().finalMessage() shape. */
+/**
+ * Tests swap in a fake with the same
+ * beta.messages.stream().finalMessage() shape.
+ */
 export function setClientForTests(fake) {
     client = fake;
 }
@@ -29,8 +40,9 @@ const FALLBACK_CAPABLE = new Set([
 ]);
 
 /**
- * A failure with a message that's safe to show teachers. `retryable` is true only for failures
- * a second identical call could fix (timeouts, network errors, overload, unreadable or empty output).
+ * A failure with a message that's safe to show teachers.
+ * `retryable` is true only for failures a second identical call could fix
+ * (timeouts, network errors, overload, unreadable or empty output).
  */
 export class LevelerError extends Error {
     constructor(message, { retryable = false } = {}) {
@@ -40,8 +52,11 @@ export class LevelerError extends Error {
 }
 
 /**
- * Generates one level's content. Returns { content, model, usage, durationMs }.
- * Throws LevelerError; when the call was billed, `model`, `usage` and `durationMs` are attached to it.
+ * Generates one level's content.
+ * Returns { content, model, usage, durationMs }.
+ * Throws LevelerError.
+ * When the call was billed, `model`, `usage` and `durationMs` are attached
+ * to the error.
  */
 export async function generateLevel(request) {
     const { text, levelId, counts, translationLanguage } = request;
@@ -83,7 +98,10 @@ export async function generateLevel(request) {
 
 // --- The model call ---
 
-/** Streams one structured-output request and returns the final message. Async so that setup errors reject too. */
+/**
+ * Streams one structured-output request and returns the final message.
+ * Async so that setup errors reject too.
+ */
 async function callModel({ system, messages, outputFormat }) {
     const useFallback = FALLBACK_CAPABLE.has(config.model);
     return getClient()
@@ -103,7 +121,10 @@ async function callModel({ system, messages, outputFormat }) {
         .finalMessage();
 }
 
-/** Rejects refusals and cut-off answers. Neither is retried: the same input gives the same result. */
+/**
+ * Rejects refusals and cut-off answers.
+ * Neither is retried: the same input gives the same result.
+ */
 function assertCompleteResponse(response) {
     if (response.stop_reason === "refusal") {
         throw new LevelerError(
@@ -117,7 +138,10 @@ function assertCompleteResponse(response) {
     }
 }
 
-/** Parses the JSON text block; unreadable output is worth one retry. */
+/**
+ * Parses the JSON text block.
+ * Unreadable output is worth one retry.
+ */
 function parseJsonResponse(response) {
     const textBlock = response.content.find((block) => block.type === "text");
     try {
@@ -130,9 +154,13 @@ function parseJsonResponse(response) {
     }
 }
 
-// --- Cleaning the model's JSON so the docx/preview code can trust its shape ---
+// --- Cleaning the model's JSON, so docx and preview code can trust it ---
 
-/** Trims every string, drops incomplete items, and caps each list at the requested count. */
+/**
+ * Trims every string, drops incomplete items, and caps each list at the
+ * requested count.
+ * Throws a retryable LevelerError if no paragraphs are left.
+ */
 function normalizeContent(raw, counts, levelId, includeTranslation) {
     const split = questionSplit(levelId, counts.questions);
     const content = {
@@ -179,7 +207,10 @@ function normalizeGlossary(entries = [], includeTranslation) {
         .filter((entry) => entry.term && entry.definition);
 }
 
-/** Multiple-choice questions that have a question and exactly four non-empty options. */
+/**
+ * Multiple-choice questions that have a question
+ * and exactly four non-empty options.
+ */
 function normalizeMultipleChoice(questions = []) {
     return questions
         .map((question) => ({
@@ -195,7 +226,10 @@ function normalizeMultipleChoice(questions = []) {
         );
 }
 
-/** Short-answer questions that have a question (the model answer may be empty). */
+/**
+ * Short-answer questions that have a question.
+ * The model answer may be empty.
+ */
 function normalizeShortAnswer(questions = []) {
     return questions
         .map((question) => ({
@@ -205,27 +239,36 @@ function normalizeShortAnswer(questions = []) {
         .filter((question) => question.question);
 }
 
+/** The trimmed string, or "" for anything that isn't a string. */
 function cleanString(value) {
     return typeof value === "string" ? value.trim() : "";
 }
 
 // --- Errors and logging ---
 
-/** Wraps an SDK error in a LevelerError with a teacher-friendly message and the right retry flag. */
+/**
+ * Wraps an SDK error in a LevelerError with a teacher-friendly message
+ * and the right retry flag.
+ */
 function toLevelerError(apiError) {
     return new LevelerError(friendlyApiError(apiError), {
         retryable: isRetryableApiError(apiError),
     });
 }
 
+/**
+ * Whether an SDK error is worth retrying: connection errors (including
+ * timeouts), rate limits, and 5xx responses (including 529 overloaded).
+ */
 function isRetryableApiError(err) {
-    if (err instanceof Anthropic.APIConnectionError) return true; // includes timeouts
+    if (err instanceof Anthropic.APIConnectionError) return true;
     if (err instanceof Anthropic.RateLimitError) return true;
     if (err instanceof Anthropic.APIError)
-        return err.status === undefined || err.status >= 500; // incl. 529 overloaded
+        return err.status === undefined || err.status >= 500;
     return false;
 }
 
+/** The teacher-facing message for an SDK error. */
 function friendlyApiError(err) {
     if (err instanceof Anthropic.AuthenticationError)
         return "Claude API key is missing or invalid. Check ANTHROPIC_API_KEY in .env.";
@@ -244,7 +287,10 @@ function friendlyApiError(err) {
     return `Unexpected error talking to the AI service: ${err.message}`;
 }
 
-/** One log line per model call, so slow calls on long articles show up before they hit the timeout. */
+/**
+ * One log line per model call,
+ * so slow calls on long articles show up before they hit the timeout.
+ */
 function logModelCall({
     articleId,
     levelId,

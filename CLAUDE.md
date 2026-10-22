@@ -21,8 +21,20 @@
 - Keep tests in arrange / act / assert form, inline. Don't hide assertions in helpers.
 
 ## Comments
-- One short comment above each non-obvious function saying what it returns or why it
-  exists. Don't narrate the code line by line.
+- Put a `/** */` comment above every function and route handler saying what it
+  returns or why it exists. The comment blocks also visually separate functions,
+  so a reader can focus on one at a time. Don't narrate the code line by line.
+- Keep comment lines to 80 characters or fewer, indentation included.
+- Put each separate idea on its own line: the summary first, then one line per
+  step, status code or caveat.
+  ```js
+  /**
+   * POST /articles/:id/retry: Try Again for every failed level of an article.
+   * Claims all failed levels in one UPDATE.
+   * 202 = started; 409 = levels still running; 200 = nothing to retry.
+   */
+  ```
+- Short `//` comments are fine inside function bodies.
 - Keep the `// REACT:`, `// POSTGRES:`, `// LOGIN:`, `// DRIVE:` migration markers.
 
 ## Project conventions

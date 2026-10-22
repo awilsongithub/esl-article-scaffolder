@@ -1,6 +1,9 @@
 // Small DOM helpers shared by every view.
 
-/** Returns the first element matching a CSS selector (shorthand for document.querySelector). */
+/**
+ * Returns the first element matching a CSS selector.
+ * Shorthand for document.querySelector.
+ */
 export function findElement(selector) {
     return document.querySelector(selector);
 }
@@ -8,8 +11,10 @@ export function findElement(selector) {
 /**
  * Creates an element with attributes and children.
  * - Attributes starting with "on" become event listeners (onclick → "click").
- * - null / undefined / false attributes and children are skipped, so conditionals can be inlined.
- * - Children that aren't Nodes are added as text, so article content can never inject HTML.
+ * - null / undefined / false attributes and children are skipped,
+ *   so conditionals can be inlined.
+ * - Children that aren't Nodes are added as text,
+ *   so article content can never inject HTML.
  */
 export function createElement(tag, attributes = {}, ...children) {
     const element = document.createElement(tag);
