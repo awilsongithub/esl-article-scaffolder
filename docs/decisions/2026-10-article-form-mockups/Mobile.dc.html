@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New article — mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#141414}a:hover{color:#4a4a4a}
+.r{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;color:#141414;background:#fff;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+.r *{box-sizing:border-box}
+.lbl{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600;color:#141414;margin:0 0 8px;min-height:22px}
+.opt{font-weight:400;color:#6b6b6b;margin-left:2px}
+.info{position:relative;width:28px;height:28px;border:0;background:none;padding:0;color:#6b6b6b;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;cursor:help}
+.info:hover,.info:focus{color:#141414;background:#f0f0f0;outline:none}
+.tip{display:none;position:absolute;z-index:5;bottom:calc(100% + 8px);left:-60px;width:240px;padding:10px 12px;border-radius:8px;background:#141414;color:#fff;font-size:13px;font-weight:400;line-height:1.45;text-align:left;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.tip.rt{left:auto;right:-8px}
+.info:hover .tip,.info:focus .tip,.tip.show{display:block}
+.ctl{display:block;height:48px;width:100%;border:1px solid #d6d6d6;border-radius:10px;background:#fff;padding:0 14px;font:inherit;font-size:16px;color:#141414}
+.ctl::placeholder{color:#767676}
+.ctl:focus{outline:2px solid #141414;outline-offset:1px;border-color:#141414}
+.sel{position:relative}
+.sel select{appearance:none;-webkit-appearance:none;padding-right:38px;cursor:pointer}
+.sel svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#4a4a4a}
+.seg{display:flex;background:#f0f0f0;border-radius:11px;padding:4px;gap:2px}
+.seg button{flex:1;height:40px;padding:0 12px;border:0;border-radius:8px;background:none;font:inherit;font-size:15px;font-weight:500;color:#4a4a4a;cursor:pointer}
+.seg button.on{background:#fff;color:#141414;box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.drop{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;border:1px dashed #bdbdbd;border-radius:12px;background:#fafafa;padding:24px 16px}
+.ico{width:44px;height:44px;flex:none;border-radius:10px;background:#fff;border:1px solid #e3e3e3;display:flex;align-items:center;justify-content:center;color:#141414}
+.btn2{height:44px;padding:0 18px;border:1px solid #d6d6d6;border-radius:10px;background:#fff;font:inherit;font-size:15px;font-weight:500;color:#141414;cursor:pointer}
+.step{display:flex;align-items:center;height:48px;border:1px solid #d6d6d6;border-radius:10px;background:#fff;overflow:hidden}
+.step button{width:44px;height:46px;flex:none;border:0;background:#fff;color:#141414;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.step input{flex:1;min-width:0;height:46px;border:0;border-left:1px solid #ececec;border-right:1px solid #ececec;text-align:center;font:inherit;font-size:16px;color:#141414;background:#fff}
+.imgbtn{display:flex;align-items:center;gap:10px;height:48px;width:100%;padding:0 14px;border:1px dashed #bdbdbd;border-radius:10px;background:#fafafa;font:inherit;font-size:16px;color:#141414;cursor:pointer}
+.card{border:1px solid #e3e3e3;border-radius:14px;background:#fff}
+.vhead{display:flex;align-items:center;gap:4px;padding:10px 6px 10px 16px}
+.vnum{font-size:15px;font-weight:600}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#f0f0f0;font-size:13px;color:#3d3d3d}
+.icobtn{width:44px;height:44px;flex:none;border:0;border-radius:9px;background:none;color:#4a4a4a;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:6px 0;border-top:1px solid #efefef}
+.tlbl{display:flex;align-items:center;gap:4px;font-size:16px;color:#141414}
+.sw{position:relative;width:48px;height:28px;flex:none;border:0;border-radius:14px;background:#cfcfcf;padding:0;cursor:pointer}
+.sw span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.sw.on{background:#141414}
+.sw.on span{left:23px}
+.primary{height:52px;width:100%;border:0;border-radius:12px;background:#141414;color:#fff;font:inherit;font-size:16px;font-weight:600;cursor:pointer}
+.muted{font-size:13px;color:#6b6b6b}
+</style>
+</helmet>
+<div class="r" style="width: 390px; height: 1760px; display: flex; flex-direction: column">
+<div style="flex: 1; padding: 24px 16px 32px; display: flex; flex-direction: column; gap: 28px">
+
+<header style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.01em">New article</h1>
+<p style="margin: 0; font-size: 15px; color: #5f5f5f">Create up to 3 leveled versions.</p>
+</header>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">Article</h2>
+<div class="seg" role="tablist" aria-label="Article source">
+<button class="on" role="tab" aria-selected="true">Upload file</button>
+<button role="tab" aria-selected="false">Paste text</button>
+</div>
+<div class="drop">
+<div class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13V3.5M6 7.5l4-4 4 4M3.5 13v2.5a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<span class="muted">PDF, Word, .txt or .md · up to 20,000 words</span>
+<button class="btn2">Choose file</button>
+</div>
+<div>
+<label class="lbl" for="m-title">Title
+<button class="info" aria-label="About the title"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip" role="tooltip">One title covers every version, so name the topic and the grades.</span></button>
+</label>
+<input class="ctl" id="m-title" type="text" placeholder="Example: Fox Feeding Habits Grades 3 and 6" required>
+</div>
+<div>
+<label class="lbl" for="m-by">Uploaded by</label>
+<input class="ctl" id="m-by" type="text" value="Adam Wilson" required>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: baseline; justify-content: space-between">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">Versions</h2>
+<span class="muted">3 of 3</span>
+</div>
+
+<div class="card">
+<div class="vhead" style="border-bottom: 1px solid #efefef">
+<span class="vnum">Version 1</span>
+<span class="chip" style="margin-left: 8px">Grade 1</span>
+<span style="flex: 1"></span>
+<button class="icobtn" aria-label="Remove version 1"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 5h11M7 5V3.5h4V5M5 5l.7 9.5a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L13 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<button class="icobtn" aria-label="Collapse version 1" aria-expanded="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 11.5L9 7l4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div style="padding: 16px 16px 4px; display: flex; flex-direction: column; gap: 16px">
+<div>
+<label class="lbl" for="m1-grade">Grade level
+<button class="info" aria-label="About grade level"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip" role="tooltip">Rewrites the article, glossary and questions at this reading level. Same ideas, adjusted complexity.</span></button>
+</label>
+<div class="sel">
+<select class="ctl" id="m1-grade"><option>Kindergarten</option><option selected>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option></select>
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.5L7 9l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div>
+<label class="lbl" for="m1-q">Questions
+<button class="info" aria-label="About questions"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip show" role="tooltip">Mostly evidence and inference questions, so students go back into the text to answer. 0–15. Answer key included.</span></button>
+</label>
+<div class="step">
+<button aria-label="Fewer questions"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+<input id="m1-q" type="number" min="0" max="15" value="5">
+<button aria-label="More questions"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7 3v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+</div>
+</div>
+<div>
+<label class="lbl" for="m1-g">Glossary
+<button class="info" aria-label="About glossary terms"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip rt" role="tooltip">Picks the words that carry the article’s meaning and show up across subjects — not just every hard word. 0–15.</span></button>
+</label>
+<div class="step">
+<button aria-label="Fewer terms"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+<input id="m1-g" type="number" min="0" max="15" value="6">
+<button aria-label="More terms"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7 3v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+</div>
+</div>
+</div>
+<div>
+<label class="lbl" for="m1-lang">Glossary translation
+<button class="info" aria-label="About glossary translation"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip" role="tooltip">Adds each definition in the student’s home language next to the English, linking new words to ones they already know.</span></button>
+</label>
+<div class="sel">
+<select class="ctl" id="m1-lang"><option>No translation</option><option selected>Spanish</option><option>Arabic</option><option>Ukrainian</option><option>Vietnamese</option><option>Haitian Creole</option></select>
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.5L7 9l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</div>
+<div>
+<label class="lbl" for="m1-img">Image <span class="opt">optional</span>
+<button class="info" aria-label="About the image"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip" role="tooltip">One picture placed with this version. A visual gives learners a second way into the meaning.</span></button>
+</label>
+<button class="imgbtn" id="m1-img"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><rect x="2.5" y="3.5" width="13" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><circle cx="6.5" cy="7.5" r="1.3" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 12.5l4-3.5 3 2.5 2-1.5 4 3" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Add image</button>
+</div>
+<div>
+<div class="trow">
+<span class="tlbl">Short summary
+<button class="info" aria-label="About the summary"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip" role="tooltip">A few sentences before the article. Previewing the big idea gives students a frame to hang details on.</span></button>
+</span>
+<button class="sw on" role="switch" aria-checked="true" aria-label="Short summary"><span></span></button>
+</div>
+<div class="trow">
+<span class="tlbl">Break into sections
+<button class="info" aria-label="About sections"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip" role="tooltip">Splits the article into short sections, each followed by its own questions. Checking understanding in small steps catches confusion early. The glossary stays whole.</span></button>
+</span>
+<button class="sw on" role="switch" aria-checked="true" aria-label="Break into sections"><span></span></button>
+</div>
+<div class="trow">
+<span class="tlbl">Cloze passage
+<button class="info" aria-label="About the cloze passage"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.3v3.7M8 5.1v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tip" role="tooltip">A summary with glossary words left blank. Pulling words from memory makes them stick better than rereading. Needs at least one glossary term.</span></button>
+</span>
+<button class="sw" role="switch" aria-checked="false" aria-label="Cloze passage"><span></span></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="vhead">
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 2px 0">
+<div style="display: flex; align-items: center; gap: 8px"><span class="vnum">Version 2</span><span class="chip">Grade 3</span></div>
+<span class="muted">8 questions · 8 terms · Spanish</span>
+</div>
+<button class="icobtn" aria-label="Remove version 2"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 5h11M7 5V3.5h4V5M5 5l.7 9.5a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L13 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<button class="icobtn" aria-label="Expand version 2" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 7L9 11.5 13.5 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+
+<div class="card">
+<div class="vhead">
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 2px 0">
+<div style="display: flex; align-items: center; gap: 8px"><span class="vnum">Version 3</span><span class="chip">Grade 6</span></div>
+<span class="muted">10 questions · 12 terms · Cloze</span>
+</div>
+<button class="icobtn" aria-label="Remove version 3"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 5h11M7 5V3.5h4V5M5 5l.7 9.5a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L13 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<button class="icobtn" aria-label="Expand version 3" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 7L9 11.5 13.5 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+
+<p class="muted" style="margin: 4px 0 0; text-align: center">You’ve reached the maximum of 3 versions.</p>
+</section>
+</div>
+
+<footer style="position: sticky; bottom: 0; padding: 12px 16px 20px; background: #fff; border-top: 1px solid #ececec; display: flex; flex-direction: column; gap: 8px">
+<button class="primary">Create 3 versions</button>
+<span class="muted" style="text-align: center">Answer keys included</span>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1760}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
