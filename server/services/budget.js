@@ -14,6 +14,7 @@ export class BudgetError extends Error {}
 
 let reservedUsd = 0; // worst-case cost of calls currently in flight
 
+/** price falls back to the most expensive known rate */
 const FALLBACK_PRICE = Object.values(MODEL_PRICES).reduce(
     (max, p) => ({
         input: Math.max(max.input, p.input),
@@ -42,6 +43,7 @@ export function today() {
 /** USD cost of a call on `model` with these token counts. */
 export function costUsd(model, inputTokens, outputTokens) {
     const p = priceFor(model);
+    // example: 100K input tokens at $10/M + 100K output tokens at $10/M = $2.00
     return (inputTokens * p.input + outputTokens * p.output) / 1_000_000;
 }
 
@@ -62,13 +64,9 @@ export function estimateCallUsd(articleText) {
  * or a 503 error when no API key is set.
  */
 export async function reserve(articleText, calls) {
+    const errMssg = "Claude API key is not set up. Add ANTHROPIC_API_KEY to .env and restart the server.";
     if (!config.hasApiCredentials) {
-        throw Object.assign(
-            new Error(
-                "Claude API key is not set up. Add ANTHROPIC_API_KEY to .env and restart the server.",
-            ),
-            { status: 503 },
-        );
+        throw Object.assign(new Error(errMssg), { status: 503 });
     }
     const perCall = estimateCallUsd(articleText);
     // Hold the amount before awaiting,

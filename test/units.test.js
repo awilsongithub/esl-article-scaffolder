@@ -106,6 +106,14 @@ test("budget.reserve: two parallel reservations that only fit once → one wins"
     }
 });
 
+test("budget.costUsd: Fable 5.1 at its own rate, unknown models at the highest", () => {
+    const fableCost = budget.costUsd("claude-fable-5-1", 1_000_000, 1_000_000);
+    const unknownCost = budget.costUsd("some-new-model", 1_000_000, 1_000_000);
+
+    assert.equal(fableCost, 60);
+    assert.equal(unknownCost, 60);
+});
+
 test("buildPrompt: level guidance, article wrapper, schema follows translation", () => {
     const counts = { terms: 5, questions: 5 };
     const k = prompt.buildPrompt({
