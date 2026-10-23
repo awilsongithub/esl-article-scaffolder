@@ -36,9 +36,15 @@ a {
 }
 
 .site-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   background: var(--card);
   border-bottom: 1px solid var(--border);
   padding: 16px 24px;
+}
+.logo {
+  flex: none;
 }
 .brand {
   font-size: 1.3rem;
