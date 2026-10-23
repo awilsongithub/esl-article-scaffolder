@@ -44,6 +44,9 @@ so read them as markup and CSS; they won't render on their own.
    truth for the mockups' design decisions. Component CSS only reads from it.
 6. **No Bootstrap or other component library** on the form. A component
    library may come with the React refactor.
+7. **Keep the logo** at the far left of the site `<header>`:
+   `public/assets/images/logo-esl-scaffolder-icon-size.svg`, 36×36. The
+   mockups only show the form, not the site header, so this isn't in them.
 
 **Roadmap only, not in these tickets:** saved, named option sets. See
 [Ticket 9](#ticket-9-roadmap-saved-option-sets).
@@ -114,8 +117,8 @@ Branch `feat/versions-contract`. Docs and fixtures only.
   `file` or `text`, `versions` (a JSON string, array of 1–3), and
   `image_1` … `image_3` files matched to versions by number.
   `uploaded_by` is required.
-  Each version: `{ number, grade, questions, terms, translationLanguage,
-  summary, sections, cloze }`.
+  Each version:
+  `{ number, grade, questions, terms, translationLanguage, summary, sections, cloze }`.
 - `GET /api/config`: adds `grades` (K–12 ids and labels), `maxVersions: 3`,
   `maxQuestions: 15`, `maxTerms: 15`, image types and size limit.
 - `GET /api/articles/:id`: `versions` replaces `levels`.
@@ -139,6 +142,10 @@ Branch `feat/design-tokens`. Frontend, no behavior change.
   accent, and controls are 44px tall (48px on mobile). The whole app takes
   the new look, by pointing today's variables at the new tokens, so the
   form and the detail page don't look like two different products.
+- The site header keeps the logo at the far left. The logo's stroke color
+  (`#141414`) is written into the SVG file, so it can't read a token. If
+  `--black-ish` ever changes, either update the SVG to match or inline it
+  with `stroke="currentColor"`.
 
 ### Ticket 3: Article form
 
@@ -171,6 +178,9 @@ Branch `feat/article-form`. Frontend.
   contract payload, tested against the ticket 1 fixture.
 - Vanilla ES modules built with `createElement`, per CLAUDE.md. No
   Bootstrap.
+- Leave the site header and its logo as they are; only the form is
+  replaced. Update the header tagline, which still says "Kindergarten,
+  Grade 5 and Grade 10", to describe choosing up to 3 grade levels.
 
 ### Ticket 4: Database migration
 
@@ -291,13 +301,13 @@ Not scheduled. Depends on login (`LOGIN:` markers).
 
 ## Decisions (confirmed 2026-10-23)
 
-| # | Question | Decision |
-|---|---|---|
-| 1 | Max versions | 3, as in the mockups |
-| 2 | New look for the whole app or only the form | Whole app (ticket 2) |
-| 3 | "Uploaded by" required or optional | Required |
-| 4 | Keep old `/levels/:level` routes as aliases | No, remove them |
-| 5 | Image limits | PNG or JPEG, up to 5 MB each, not sent to the model |
-| 6 | Allow two versions with the same grade | Yes, keyed by version number |
-| 7 | Ticket PRs target an integration branch | Yes, `feat/article-versions` |
-| 8 | Translation languages | Keep today's 14 |
+| #   | Question                                    | Decision                                            |
+| --- | ------------------------------------------- | --------------------------------------------------- |
+| 1   | Max versions                                | 3, as in the mockups                                |
+| 2   | New look for the whole app or only the form | Whole app (ticket 2)                                |
+| 3   | "Uploaded by" required or optional          | Required                                            |
+| 4   | Keep old `/levels/:level` routes as aliases | No, remove them                                     |
+| 5   | Image limits                                | PNG or JPEG, up to 5 MB each, not sent to the model |
+| 6   | Allow two versions with the same grade      | Yes, keyed by version number                        |
+| 7   | Ticket PRs target an integration branch     | Yes, `feat/article-versions`                        |
+| 8   | Translation languages                       | Keep today's 14                                     |
