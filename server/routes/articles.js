@@ -56,7 +56,8 @@ router.get("/articles", async (req, res) => {
         typeof req.query.q === "string"
             ? req.query.q.trim().slice(0, MAX_SEARCH_CHARS)
             : "";
-    res.json(await repo.listArticles(query));
+    const articles = await repo.listArticles(query);
+    res.json(articles);
 });
 
 /**

@@ -4,6 +4,8 @@ Mockups: [2026-10-article-form-mockups/](2026-10-article-form-mockups/)
 (`Main.dc.html` desktop 1280px, `Tablet.dc.html` 834px, `Mobile.dc.html` 390px).
 They load a `./support.js` design-tool runtime that isn't in the repo,
 so read them as markup and CSS; they won't render on their own.
+They're three fixed-width snapshots with inline styles and no media
+queries. The build is one responsive form (requirements 5 and 6).
 
 ## Where we are today
 
@@ -38,15 +40,41 @@ so read them as markup and CSS; they won't render on their own.
      one complete list.
    - **Cloze passage**, on or off: a summary with glossary words blanked
      out. Requires at least one glossary term.
-5. **Styles as their own layer:** one CSS file of custom properties
-   (e.g. `--black-ish: #141414`, `--border-control: #d6d6d6`,
-   `--radius-control: 10px`, `--control-height: 44px`) is the source of
-   truth for the mockups' design decisions. Component CSS only reads from it.
-6. **No Bootstrap or other component library** on the form. A component
+5. **Styles in global stylesheets, as their own layer:**
+   - All CSS lives in global files in `public/assets/styles/`, next to
+     `public/assets/images/`: `tokens.css` (custom properties) and
+     `styles.css` (layout and components, moved from `public/`).
+   - No inline `style="…"` attributes, no `<style>` blocks, and no styles
+     set from JavaScript. JS toggles classes or attributes (`is-collapsed`,
+     `aria-checked`) and the stylesheet styles them.
+   - `tokens.css` is the source of truth for the mockups' design decisions
+     (e.g. `--black-ish: #141414`, `--border-control: #d6d6d6`,
+     `--radius-control: 10px`, `--control-height: 44px`). Component CSS
+     only reads from it.
+6. **Responsive, with breakpoints:** one form that adapts to the width,
+   not three layouts. Mobile-first: the phone layout is the default, and
+   `min-width` media queries add the tablet and desktop layouts. The
+   breakpoints are set in ticket 2.
+7. **No Bootstrap or other component library** on the form. A component
    library may come with the React refactor.
-7. **Keep the logo** at the far left of the site `<header>`:
+8. **Keep the logo** at the far left of the site `<header>`:
    `public/assets/images/logo-esl-scaffolder-icon-size.svg`, 36×36. The
    mockups only show the form, not the site header, so this isn't in them.
+9. **Output order.** The Word download and the preview show each
+   version's parts in this order, skipping any that are off or empty:
+   1. Title header, as today
+   2. Image (optional)
+   3. Summary (optional)
+   4. Article. With sections on, each section's questions follow that
+      section.
+   5. Glossary, one complete list
+   6. Questions, when sections are off: after the glossary, as today
+   7. Cloze passage (optional)
+   8. Answer key, at the end of the Word file only, as today
+10. **Bold glossary words** wherever they appear in the summary and the
+    article, every time, including other forms of the word ("habitats"
+    for the term "habitat"). Not in the questions or the cloze passage.
+    Articles generated before this change stay without bold.
 
 **Roadmap only, not in these tickets:** saved, named option sets. See
 [Ticket 9](#ticket-9-roadmap-saved-option-sets).
@@ -124,6 +152,8 @@ Branch `feat/versions-contract`. Docs and fixtures only.
 - `GET /api/articles/:id`: `versions` replaces `levels`.
 - `GET /api/articles/:id/versions/:n`: content adds `summary`,
   `sections: [{ heading, paragraphs, questions }]`, `cloze`, `imageUrl`.
+  In `summary` and the paragraphs, glossary words are wrapped in
+  `**…**` markers (requirement 10).
 - Fixtures in `test/contracts/` for a valid upload, each validation error,
   and each response.
 - The old `/levels/:level` routes are removed, not kept as aliases.
@@ -132,12 +162,25 @@ Branch `feat/versions-contract`. Docs and fixtures only.
 
 Branch `feat/design-tokens`. Frontend, no behavior change.
 
-- `public/css/tokens.css`: every color, radius, size, spacing and font
-  value from the mockups as a custom property, named by intent
+- `public/assets/styles/tokens.css`: every color, radius, size, spacing
+  and font value from the mockups as a custom property, named by intent
   (`--color-text`, `--border-control`, `--control-height`,
   `--radius-card`, …).
+- Move `public/styles.css` to `public/assets/styles/styles.css`.
+  `index.html` links `tokens.css` first, then `styles.css`.
 - `styles.css` reads only from tokens. No raw hex values outside
   `tokens.css`.
+- **Breakpoints,** mobile-first, set between the mockup widths:
+  - Default (no media query): phone layout, the 390px mockup.
+  - `min-width: 600px`: tablet layout, the 834px mockup.
+  - `min-width: 1024px`: desktop layout, the 1280px mockup.
+
+  Custom properties don't work inside `@media`, so write these values
+  literally and list them by name in a comment at the top of
+  `tokens.css`.
+
+- Replace the one style set from JS, `counter.style.color` for the
+  word-count warning in `upload-form.js`, with a class.
 - The mockups set new values: monochrome `#141414` replaces today's blue
   accent, and controls are 44px tall (48px on mobile). The whole app takes
   the new look, by pointing today's variables at the new tokens, so the
@@ -159,8 +202,12 @@ Branch `feat/article-form`. Frontend.
   - The submit button reads "Create N versions".
   - Collapsed cards show a one-line summary, e.g.
     "8 questions · 8 terms · Spanish · Sections".
-- Layout at the mockups' three widths (390, 834, 1280px). On mobile the
-  footer is sticky.
+- **Responsive layout:** one form that matches the mockups at 390, 834
+  and 1280px, using the ticket 2 breakpoints. On mobile the footer is
+  sticky. No horizontal scroll down to 320px.
+- Move every inline style from the mockups into classes in
+  `styles.css`. The mockups have no media queries, so turn the
+  differences between the three files into breakpoint rules.
 - **Controls:** number steppers (0–15), switches, a per-version image
   picker with a preview and remove button, and info tooltips.
 - **Accessibility:**
@@ -177,7 +224,7 @@ Branch `feat/article-form`. Frontend.
 - **Build the request:** a pure function turns the form's state into the
   contract payload, tested against the ticket 1 fixture.
 - Vanilla ES modules built with `createElement`, per CLAUDE.md. No
-  Bootstrap.
+  Bootstrap, and no inline styles (requirement 5).
 - Leave the site header and its logo as they are; only the form is
   replaced. Update the header tagline, which still says "Kindergarten,
   Grade 5 and Grade 10", to describe choosing up to 3 grade levels.
@@ -257,15 +304,22 @@ Branch `feat/prompt-versions`.
   (`{ text with numbered blanks, answers }`), each present only when
   chosen. `normalizeContent` validates them, e.g. that cloze blanks only
   use glossary terms.
+- **Glossary markers:** the model wraps each glossary word in the summary
+  and paragraphs in `**…**`, including other forms of the word.
+  `normalizeContent` removes markers around words that aren't glossary
+  terms, so a stray marker shows as plain text.
 - Golden prompt fixtures updated; unit tests for the schema per option.
 
 ### Ticket 7: Word output
 
 Branch `feat/docx-versions`.
 
-- **Render the new parts:** the summary before the reading, sections with
-  their questions, the whole glossary, the cloze passage, and the image
-  (`ImageRun`, with alt text).
+- **Render the new parts in the requirement 9 order:** image
+  (`ImageRun`, with alt text), summary, the reading (each section
+  followed by its questions when sections are on), the whole glossary,
+  the questions when sections are off, then the cloze passage.
+- **Bold glossary words:** turn `**…**` markers in the summary and
+  paragraphs into bold `TextRun`s, without the asterisks.
 - **Answer key:** covers per-section questions and the cloze answers.
 - Old articles without these fields still render.
 - Golden docx fixtures for each option.
@@ -276,9 +330,13 @@ Branch `feat/detail-versions`. Frontend.
 
 - **Version cards:** one card per version (1–3), labelled with the version
   number and grade. Retry, regenerate and download call the version routes.
-- **Preview:** renders the summary, sections, cloze and image.
+- **Preview:** renders the image, summary, sections, glossary, questions
+  and cloze in the requirement 9 order, the same as the Word file.
+- **Bold glossary words:** turn `**…**` markers into `<strong>` elements
+  built with `createElement` and text nodes, never `innerHTML`.
 - **Retry all:** "Try again for all N failed versions" keeps working.
-- Styled with the ticket 2 tokens.
+- Styled with the ticket 2 tokens and breakpoints, in the global
+  stylesheets.
 
 ### Ticket 9 (roadmap): Saved option sets
 
@@ -299,15 +357,21 @@ Not scheduled. Depends on login (`LOGIN:` markers).
 - Tickets 1 and 4 should keep version options as one self-contained JSON
   shape, so a saved set can reuse it unchanged.
 
-## Decisions (confirmed 2026-10-23)
+## Decisions
 
-| #   | Question                                    | Decision                                            |
-| --- | ------------------------------------------- | --------------------------------------------------- |
-| 1   | Max versions                                | 3, as in the mockups                                |
-| 2   | New look for the whole app or only the form | Whole app (ticket 2)                                |
-| 3   | "Uploaded by" required or optional          | Required                                            |
-| 4   | Keep old `/levels/:level` routes as aliases | No, remove them                                     |
-| 5   | Image limits                                | PNG or JPEG, up to 5 MB each, not sent to the model |
-| 6   | Allow two versions with the same grade      | Yes, keyed by version number                        |
-| 7   | Ticket PRs target an integration branch     | Yes, `feat/article-versions`                        |
-| 8   | Translation languages                       | Keep today's 14                                     |
+1–8 confirmed 2026-10-23; 9–12 added 2026-10-26.
+
+| #   | Question                                    | Decision                                                                                             |
+| --- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 1   | Max versions                                | 3, as in the mockups                                                                                 |
+| 2   | New look for the whole app or only the form | Whole app (ticket 2)                                                                                 |
+| 3   | "Uploaded by" required or optional          | Required                                                                                             |
+| 4   | Keep old `/levels/:level` routes as aliases | No, remove them                                                                                      |
+| 5   | Image limits                                | PNG or JPEG, up to 5 MB each, not sent to the model                                                  |
+| 6   | Allow two versions with the same grade      | Yes, keyed by version number                                                                         |
+| 7   | Ticket PRs target an integration branch     | Yes, `feat/article-versions`                                                                         |
+| 8   | Translation languages                       | Keep today's 14                                                                                      |
+| 9   | Where CSS lives                             | Global files in `public/assets/styles/`, no inline styles                                            |
+| 10  | Responsive approach                         | Mobile-first; breakpoints at 600px and 1024px                                                        |
+| 11  | Output order                                | Image, summary, article, glossary, questions, cloze; with sections on, questions follow each section |
+| 12  | Bold glossary words                         | Yes, in the summary and article, marked by the model as `**…**`                                      |
