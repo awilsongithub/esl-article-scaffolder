@@ -121,7 +121,7 @@ function updatePastedWordCount() {
     const words = countWords(findElement("#text").value);
     const counter = findElement("#text-count");
     counter.textContent = `${words.toLocaleString()} / ${maxWords.toLocaleString()} words`;
-    counter.style.color = words > maxWords ? "var(--danger)" : "";
+    counter.classList.toggle("is-over-limit", words > maxWords);
 }
 
 /**
