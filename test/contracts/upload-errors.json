@@ -1,0 +1,724 @@
+{
+  "description": "POST /api/articles validation errors. Nothing is saved, no budget is reserved and no model call is made.",
+  "method": "POST",
+  "path": "/api/articles",
+  "cases": [
+    {
+      "name": "title missing",
+      "request": {
+        "fields": {
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Title is required."
+        }
+      }
+    },
+    {
+      "name": "title only spaces",
+      "request": {
+        "fields": {
+          "title": "   ",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Title is required."
+        }
+      }
+    },
+    {
+      "name": "uploaded_by missing",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Uploaded by is required."
+        }
+      }
+    },
+    {
+      "name": "uploaded_by only spaces",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "   ",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Uploaded by is required."
+        }
+      }
+    },
+    {
+      "name": "title too long",
+      "request": {
+        "fields": {
+          "title": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Title must be 150 characters or fewer."
+        }
+      }
+    },
+    {
+      "name": "pasted text empty",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "   ",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Please paste the article text."
+        }
+      }
+    },
+    {
+      "name": "file mode with no file",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "file",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Please choose a file to upload."
+        }
+      }
+    },
+    {
+      "name": "unsupported article file type",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "file",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        },
+        "files": {
+          "file": {
+            "filename": "foxes.rtf",
+            "contentType": "application/rtf",
+            "text": "Foxes eat mice."
+          }
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Unsupported file type. Please upload .pdf, .docx, .txt, .md."
+        }
+      }
+    },
+    {
+      "name": "versions missing",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects."
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Please add at least one version."
+        }
+      }
+    },
+    {
+      "name": "versions empty",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": []
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Please add at least one version."
+        }
+      }
+    },
+    {
+      "name": "versions not a JSON array",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": "version 1"
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Versions must be a JSON array."
+        }
+      }
+    },
+    {
+      "name": "more than 3 versions",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            },
+            {
+              "number": 2,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            },
+            {
+              "number": 3,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            },
+            {
+              "number": 4,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "An article can have at most 3 versions."
+        }
+      }
+    },
+    {
+      "name": "version numbers repeated",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            },
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Versions must be numbered in order, starting at 1."
+        }
+      }
+    },
+    {
+      "name": "version numbers skip",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            },
+            {
+              "number": 3,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Versions must be numbered in order, starting at 1."
+        }
+      }
+    },
+    {
+      "name": "grade unknown",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g13",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 1: please choose a grade from Kindergarten to Grade 12."
+        }
+      }
+    },
+    {
+      "name": "questions over 15",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 16,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 1: questions must be a whole number from 0 to 15."
+        }
+      }
+    },
+    {
+      "name": "glossary terms not a whole number",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 2.5,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 1: glossary terms must be a whole number from 0 to 15."
+        }
+      }
+    },
+    {
+      "name": "translation language not in the list",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": "Latin",
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 1: please choose a translation language from the list."
+        }
+      }
+    },
+    {
+      "name": "switch not true or false",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": "yes",
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 1: summary must be true or false."
+        }
+      }
+    },
+    {
+      "name": "cloze with 0 glossary terms",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            },
+            {
+              "number": 2,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 0,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": true
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 2: the cloze passage needs at least 1 glossary term."
+        }
+      }
+    },
+    {
+      "name": "image not PNG or JPEG",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        },
+        "files": {
+          "image_1": {
+            "filename": "fox.gif",
+            "contentType": "image/gif",
+            "sizeBytes": 20480
+          }
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 1: the image must be a PNG or JPEG."
+        }
+      }
+    },
+    {
+      "name": "image over 5 MB",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        },
+        "files": {
+          "image_1": {
+            "filename": "fox.png",
+            "contentType": "image/png",
+            "sizeBytes": 5242881
+          }
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "Version 1: the image must be 5 MB or smaller."
+        }
+      }
+    },
+    {
+      "name": "image with no matching version",
+      "request": {
+        "fields": {
+          "title": "Foxes",
+          "uploaded_by": "Adam Wilson",
+          "mode": "paste",
+          "text": "Foxes eat mice, berries and insects.",
+          "versions": [
+            {
+              "number": 1,
+              "grade": "g5",
+              "questions": 4,
+              "terms": 4,
+              "translationLanguage": null,
+              "summary": false,
+              "sections": false,
+              "cloze": false
+            }
+          ]
+        },
+        "files": {
+          "image_2": {
+            "filename": "fox.png",
+            "contentType": "image/png",
+            "sizeBytes": 20480
+          }
+        }
+      },
+      "response": {
+        "status": 400,
+        "body": {
+          "error": "image_2 doesn't match a version."
+        }
+      }
+    }
+  ]
+}

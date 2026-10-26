@@ -1,0 +1,108 @@
+{
+  "description": "GET /api/articles/:id/versions/:n, ready, sections on: Grade 6, no translation, with summary, cloze and image. Each section holds its own questions; there are no top-level paragraphs or questions.",
+  "method": "GET",
+  "path": "/api/articles/42/versions/3",
+  "status": 200,
+  "body": {
+    "number": 3,
+    "grade": "g6",
+    "gradeLabel": "Grade 6",
+    "questions": 4,
+    "terms": 4,
+    "translationLanguage": null,
+    "summary": true,
+    "sections": true,
+    "cloze": true,
+    "imageUrl": "/api/articles/42/versions/3/image",
+    "status": "ready",
+    "error": null,
+    "updatedAt": "2026-10-26 14:05:58",
+    "content": {
+      "title": "How Foxes Find Food",
+      "summary": "Red foxes are **omnivores** that eat both plants and animals. They hunt at night with sharp hearing and **pounce** on their **prey**, then carry food back to their young.",
+      "sections": [
+        {
+          "heading": "A Varied Diet",
+          "paragraphs": [
+            "Red foxes are **omnivores**. They eat small mammals, birds and insects, but also berries and fruit."
+          ],
+          "multipleChoice": [],
+          "shortAnswer": [
+            {
+              "question": "What evidence in this section shows that foxes are omnivores?",
+              "modelAnswer": "They eat animals such as small mammals, birds and insects, and plants such as berries and fruit."
+            }
+          ]
+        },
+        {
+          "heading": "Hunting in Winter",
+          "paragraphs": [
+            "A fox hunts mostly at night. In winter, it listens for mice moving under the snow. When it hears one, it leaps up and **pounces** on its **prey**."
+          ],
+          "multipleChoice": [
+            {
+              "question": "Why does a fox need good hearing in winter?",
+              "options": [
+                "To hear other foxes calling",
+                "To find mice it can't see under the snow",
+                "To hear when the snow will melt",
+                "To listen for danger at night"
+              ],
+              "correctOption": "B"
+            }
+          ],
+          "shortAnswer": [
+            {
+              "question": "Describe the steps a fox takes to catch a mouse in the snow.",
+              "modelAnswer": "It listens for the mouse moving, leaps up, and pounces on it."
+            }
+          ]
+        },
+        {
+          "heading": "Feeding the Kits",
+          "paragraphs": [
+            "In spring, both parents carry food back to the **den**, where their kits wait."
+          ],
+          "multipleChoice": [],
+          "shortAnswer": [
+            {
+              "question": "Why do you think both parents bring food to the den in spring?",
+              "modelAnswer": "The kits are too young to hunt, so they need both parents to feed them."
+            }
+          ]
+        }
+      ],
+      "glossary": [
+        {
+          "term": "omnivore",
+          "definition": "an animal that eats both plants and animals",
+          "example": "Bears are omnivores that eat fish and berries."
+        },
+        {
+          "term": "prey",
+          "definition": "an animal that is hunted and eaten by another animal",
+          "example": "Mice are common prey for foxes."
+        },
+        {
+          "term": "pounce",
+          "definition": "to jump suddenly onto something to catch it",
+          "example": "The cat pounced on the toy."
+        },
+        {
+          "term": "den",
+          "definition": "a hidden home where a wild animal lives and raises its young",
+          "example": "The fox kits stayed in the den."
+        }
+      ],
+      "cloze": {
+        "text": "Red foxes are [[1]], so they eat plants and animals. At night a fox listens for [[2]] under the snow, then it [[3]]. In spring, the parents carry food to the [[4]].",
+        "answers": [
+          { "blank": 1, "answer": "omnivores", "term": "omnivore" },
+          { "blank": 2, "answer": "prey", "term": "prey" },
+          { "blank": 3, "answer": "pounces", "term": "pounce" },
+          { "blank": 4, "answer": "den", "term": "den" }
+        ]
+      }
+    }
+  }
+}

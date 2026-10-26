@@ -1,0 +1,22 @@
+{
+  "description": "GET /api/articles/:id/versions/:n, failed. A pending or processing version has the same shape, with error null. content stays null until the version is ready.",
+  "method": "GET",
+  "path": "/api/articles/42/versions/2",
+  "status": 200,
+  "body": {
+    "number": 2,
+    "grade": "g3",
+    "gradeLabel": "Grade 3",
+    "questions": 4,
+    "terms": 4,
+    "translationLanguage": "Spanish",
+    "summary": false,
+    "sections": true,
+    "cloze": false,
+    "imageUrl": null,
+    "status": "failed",
+    "error": "The AI took too long to respond. Please try again.",
+    "updatedAt": "2026-10-26 14:06:12",
+    "content": null
+  }
+}
