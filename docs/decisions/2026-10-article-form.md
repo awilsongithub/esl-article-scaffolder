@@ -19,7 +19,8 @@ queries. The build is one responsive form (requirements 5 and 6).
 
 ## Requirements
 
-1. **One title** covers all versions.
+1. **One title, required,** covers all versions. Today it's optional and
+   taken from the article's heading when blank.
    Placeholder: `Example: Fox Feeding Habits Grades 1, 3 and 6`.
 2. **1 to 3 versions** per article, as in the mockups.
 3. **"Uploaded by" is required** (today it's optional).
@@ -144,15 +145,16 @@ Branch `feat/versions-contract`. Docs and fixtures only.
 - `POST /api/articles` (multipart): `title`, `uploaded_by`, `mode`,
   `file` or `text`, `versions` (a JSON string, array of 1–3), and
   `image_1` … `image_3` files matched to versions by number.
-  `uploaded_by` is required.
+  `title` and `uploaded_by` are required.
   Each version:
   `{ number, grade, questions, terms, translationLanguage, summary, sections, cloze }`.
 - `GET /api/config`: adds `grades` (K–12 ids and labels), `maxVersions: 3`,
   `maxQuestions: 15`, `maxTerms: 15`, image types and size limit.
 - `GET /api/articles/:id`: `versions` replaces `levels`.
-- `GET /api/articles/:id/versions/:n`: content adds `summary`,
-  `sections: [{ heading, paragraphs, questions }]`, `cloze`, `imageUrl`.
-  In `summary` and the paragraphs, glossary words are wrapped in
+- `GET /api/articles/:id/versions/:n`: the version adds `imageUrl`, and
+  its content adds `summary`,
+  `sections: [{ heading, paragraphs, multipleChoice, shortAnswer }]` and
+  `cloze`. In `summary` and the paragraphs, glossary words are wrapped in
   `**…**` markers (requirement 10).
 - Fixtures in `test/contracts/` for a valid upload, each validation error,
   and each response.
@@ -217,6 +219,7 @@ Branch `feat/article-form`. Frontend.
   - Tooltips open on focus and tap, not just hover, and close with Escape.
   - Switches use `role="switch"` and `aria-checked`.
 - **Client-side checks:**
+  - Title is required.
   - "Uploaded by" is required. It's still remembered in the browser
     between uploads, as today.
   - Cloze is disabled while glossary terms are 0, with a note saying why.
@@ -262,12 +265,15 @@ Branch `feat/api-versions`.
   - "Uploaded by" is required (`cleanText` with `required: true`).
     Existing articles without one keep their null value; upload tests that
     leave it out are updated.
+  - Title is required too. Remove deriving it from the article's heading
+    or filename (`deriveTitle`) if nothing else uses it.
   - 1–3 versions.
   - Grade must be K–12.
   - Counts must be 0–15.
   - The language must be in the list.
   - Cloze requires terms ≥ 1.
-  - Version numbers must be unique.
+  - Versions are numbered 1, 2, 3 in order, so numbers are unique and a
+    removed card doesn't leave a gap.
 - **Budget:** reserve for N versions instead of a fixed 3. Start one job per
   version.
 - **Routes:** retry, regenerate, preview and download move to
@@ -359,7 +365,7 @@ Not scheduled. Depends on login (`LOGIN:` markers).
 
 ## Decisions
 
-1–8 confirmed 2026-10-23; 9–12 added 2026-10-26.
+1–8 confirmed 2026-10-23; 9–13 added 2026-10-26.
 
 | #   | Question                                    | Decision                                                                                             |
 | --- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -375,3 +381,4 @@ Not scheduled. Depends on login (`LOGIN:` markers).
 | 10  | Responsive approach                         | Mobile-first; breakpoints at 600px and 1024px                                                        |
 | 11  | Output order                                | Image, summary, article, glossary, questions, cloze; with sections on, questions follow each section |
 | 12  | Bold glossary words                         | Yes, in the summary and article, marked by the model as `**…**`                                      |
+| 13  | Title required or optional                  | Required, as in the mockups                                                                          |

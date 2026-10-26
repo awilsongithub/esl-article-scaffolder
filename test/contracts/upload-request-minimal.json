@@ -1,0 +1,29 @@
+{
+  "description": "POST /api/articles: an uploaded file, 1 version with everything off, no image.",
+  "method": "POST",
+  "path": "/api/articles",
+  "fields": {
+    "title": "Foxes",
+    "uploaded_by": "Adam Wilson",
+    "mode": "file",
+    "versions": [
+      {
+        "number": 1,
+        "grade": "k",
+        "questions": 0,
+        "terms": 0,
+        "translationLanguage": null,
+        "summary": false,
+        "sections": false,
+        "cloze": false
+      }
+    ]
+  },
+  "files": {
+    "file": {
+      "filename": "foxes.txt",
+      "contentType": "text/plain",
+      "text": "Foxes eat mice, berries and insects."
+    }
+  }
+}

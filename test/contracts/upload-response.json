@@ -1,0 +1,7 @@
+{
+  "description": "POST /api/articles succeeded: the article is saved and one job per version has started.",
+  "method": "POST",
+  "path": "/api/articles",
+  "status": 201,
+  "body": { "id": 42 }
+}

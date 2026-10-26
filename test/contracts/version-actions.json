@@ -1,0 +1,133 @@
+{
+  "description": "Responses from the version routes other than GET /api/articles/:id/versions/:n. A case with bodyFixture returns that fixture's body; the state each case starts from is in its name.",
+  "cases": [
+    {
+      "name": "retry a failed version",
+      "request": {
+        "method": "POST",
+        "path": "/api/articles/42/versions/2/retry"
+      },
+      "response": {
+        "status": 202,
+        "body": { "articleId": 42, "number": 2, "status": "pending" }
+      }
+    },
+    {
+      "name": "retry a version that is already ready",
+      "request": {
+        "method": "POST",
+        "path": "/api/articles/42/versions/1/retry"
+      },
+      "response": {
+        "status": 200,
+        "bodyFixture": "version-response-ready.json"
+      }
+    },
+    {
+      "name": "retry a version that is pending or processing",
+      "request": {
+        "method": "POST",
+        "path": "/api/articles/42/versions/2/retry"
+      },
+      "response": {
+        "status": 409,
+        "body": { "error": "This version is already being generated." }
+      }
+    },
+    {
+      "name": "regenerate a ready or failed version",
+      "request": {
+        "method": "POST",
+        "path": "/api/articles/42/versions/1/regenerate"
+      },
+      "response": {
+        "status": 202,
+        "body": { "articleId": 42, "number": 1, "status": "pending" }
+      }
+    },
+    {
+      "name": "regenerate a version that is pending or processing",
+      "request": {
+        "method": "POST",
+        "path": "/api/articles/42/versions/1/regenerate"
+      },
+      "response": {
+        "status": 409,
+        "body": { "error": "This version is already being generated." }
+      }
+    },
+    {
+      "name": "retry all: version 2 failed",
+      "request": { "method": "POST", "path": "/api/articles/42/retry" },
+      "response": {
+        "status": 202,
+        "body": { "articleId": 42, "claimed": [2] }
+      }
+    },
+    {
+      "name": "retry all: a version is still pending or processing",
+      "request": { "method": "POST", "path": "/api/articles/42/retry" },
+      "response": {
+        "status": 409,
+        "body": { "error": "This article is already being generated." }
+      }
+    },
+    {
+      "name": "download a version that isn't ready",
+      "request": {
+        "method": "GET",
+        "path": "/api/articles/42/versions/2/download"
+      },
+      "response": {
+        "status": 404,
+        "body": { "error": "This file is not ready yet." }
+      }
+    },
+    {
+      "name": "image for a version without one",
+      "request": {
+        "method": "GET",
+        "path": "/api/articles/42/versions/2/image"
+      },
+      "response": {
+        "status": 404,
+        "body": { "error": "This version has no image." }
+      }
+    },
+    {
+      "name": "version number the article doesn't have",
+      "request": { "method": "GET", "path": "/api/articles/42/versions/4" },
+      "response": {
+        "status": 404,
+        "body": { "error": "Version not found." }
+      }
+    },
+    {
+      "name": "version number that isn't a number",
+      "request": {
+        "method": "POST",
+        "path": "/api/articles/42/versions/k/retry"
+      },
+      "response": {
+        "status": 404,
+        "body": { "error": "Version not found." }
+      }
+    },
+    {
+      "name": "article that doesn't exist",
+      "request": { "method": "GET", "path": "/api/articles/999/versions/1" },
+      "response": {
+        "status": 404,
+        "body": { "error": "Article not found." }
+      }
+    },
+    {
+      "name": "old level route, removed",
+      "request": { "method": "GET", "path": "/api/articles/42/levels/k" },
+      "response": {
+        "status": 404,
+        "body": { "error": "Not found." }
+      }
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "description": "GET /api/config: the settings the form needs. levels and limits.maxCount are gone.",
+  "method": "GET",
+  "path": "/api/config",
+  "status": 200,
+  "body": {
+    "grades": [
+      {
+        "id": "k",
+        "label": "Kindergarten"
+      },
+      {
+        "id": "g1",
+        "label": "Grade 1"
+      },
+      {
+        "id": "g2",
+        "label": "Grade 2"
+      },
+      {
+        "id": "g3",
+        "label": "Grade 3"
+      },
+      {
+        "id": "g4",
+        "label": "Grade 4"
+      },
+      {
+        "id": "g5",
+        "label": "Grade 5"
+      },
+      {
+        "id": "g6",
+        "label": "Grade 6"
+      },
+      {
+        "id": "g7",
+        "label": "Grade 7"
+      },
+      {
+        "id": "g8",
+        "label": "Grade 8"
+      },
+      {
+        "id": "g9",
+        "label": "Grade 9"
+      },
+      {
+        "id": "g10",
+        "label": "Grade 10"
+      },
+      {
+        "id": "g11",
+        "label": "Grade 11"
+      },
+      {
+        "id": "g12",
+        "label": "Grade 12"
+      }
+    ],
+    "languages": [
+      "Spanish",
+      "Arabic",
+      "Chinese (Simplified)",
+      "Vietnamese",
+      "Portuguese",
+      "French",
+      "Ukrainian",
+      "Somali",
+      "Korean",
+      "Haitian Creole",
+      "Kinyarwanda",
+      "Swahili",
+      "Dari",
+      "Pashto"
+    ],
+    "maxVersions": 3,
+    "maxQuestions": 15,
+    "maxTerms": 15,
+    "versionDefaults": {
+      "grade": "g5",
+      "questions": 8,
+      "terms": 8,
+      "translationLanguage": null,
+      "summary": false,
+      "sections": false,
+      "cloze": false
+    },
+    "image": {
+      "types": ["image/png", "image/jpeg"],
+      "extensions": [".png", ".jpg", ".jpeg"],
+      "maxBytes": 5242880
+    },
+    "limits": {
+      "maxWords": 20000,
+      "maxFileBytes": 10485760,
+      "maxTitleChars": 150,
+      "maxUploaderChars": 60,
+      "maxPastedChars": 160000,
+      "allowedExtensions": [".pdf", ".docx", ".txt", ".md"]
+    }
+  }
+}

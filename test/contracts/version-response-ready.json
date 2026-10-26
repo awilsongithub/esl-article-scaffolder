@@ -1,0 +1,90 @@
+{
+  "description": "GET /api/articles/:id/versions/:n, ready, sections off: Grade 1 with a Spanish glossary, summary, cloze and image. Below Grade 3, so multiple choice only.",
+  "method": "GET",
+  "path": "/api/articles/42/versions/1",
+  "status": 200,
+  "body": {
+    "number": 1,
+    "grade": "g1",
+    "gradeLabel": "Grade 1",
+    "questions": 3,
+    "terms": 3,
+    "translationLanguage": "Spanish",
+    "summary": true,
+    "sections": false,
+    "cloze": true,
+    "imageUrl": "/api/articles/42/versions/1/image",
+    "status": "ready",
+    "error": null,
+    "updatedAt": "2026-10-26 14:05:41",
+    "content": {
+      "title": "What Foxes Eat",
+      "summary": "Foxes **hunt** small animals. They eat fruit too. They bring food to their **den**.",
+      "paragraphs": [
+        "Foxes are smart animals. They eat many kinds of food.",
+        "A fox **hunts** at night. It listens for mice under the snow. Then it jumps on its **prey**.",
+        "Foxes eat bugs and berries too.",
+        "A mother fox brings food to her **den**. Her babies wait for her there."
+      ],
+      "glossary": [
+        {
+          "term": "hunt",
+          "definition": "to look for and catch animals to eat",
+          "example": "The fox hunts at night.",
+          "translatedTerm": "cazar",
+          "translatedDefinition": "buscar y atrapar animales para comer"
+        },
+        {
+          "term": "prey",
+          "definition": "an animal that another animal hunts and eats",
+          "example": "A mouse is prey for a fox.",
+          "translatedTerm": "presa",
+          "translatedDefinition": "un animal que otro animal caza y come"
+        },
+        {
+          "term": "den",
+          "definition": "a hidden home where a wild animal lives",
+          "example": "The baby foxes sleep in the den.",
+          "translatedTerm": "madriguera",
+          "translatedDefinition": "una casa escondida donde vive un animal salvaje"
+        }
+      ],
+      "multipleChoice": [
+        {
+          "question": "How does a fox find mice in the snow?",
+          "options": [
+            "It looks for tracks.",
+            "It listens for them.",
+            "It digs everywhere.",
+            "It waits by a tree."
+          ],
+          "correctOption": "B"
+        },
+        {
+          "question": "Why does a mother fox bring food to the den?",
+          "options": [
+            "Her babies wait for her there.",
+            "She wants to hide it.",
+            "It is too cold outside.",
+            "Other foxes might take it."
+          ],
+          "correctOption": "A"
+        },
+        {
+          "question": "Which word tells you foxes eat many things?",
+          "options": ["smart", "night", "kinds", "snow"],
+          "correctOption": "C"
+        }
+      ],
+      "shortAnswer": [],
+      "cloze": {
+        "text": "A fox [[1]] at night. A mouse can be its [[2]]. The fox brings food to its [[3]].",
+        "answers": [
+          { "blank": 1, "answer": "hunts", "term": "hunt" },
+          { "blank": 2, "answer": "prey", "term": "prey" },
+          { "blank": 3, "answer": "den", "term": "den" }
+        ]
+      }
+    }
+  }
+}
