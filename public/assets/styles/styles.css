@@ -68,39 +68,13 @@ h2 {
   font-weight: var(--font-weight-semibold);
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
-  flex: 1;
+/* Home view: the upload form and the article list share the form's
+   width (the 760px column in the mockups). */
+.home-view {
+  max-width: var(--form-max-width);
+  margin: 0 auto;
 }
-.row {
-  display: flex;
-  gap: 0 var(--space-4);
-  flex-wrap: wrap;
-}
-.row .field {
-  min-width: var(--field-min-width);
-}
-label {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-label);
-}
-label.inline {
-  font-weight: var(--font-weight-medium);
-  display: inline-flex;
-  gap: var(--space-2);
-  align-items: center;
-}
-.hint {
-  font-weight: var(--font-weight-regular);
-  color: var(--color-text-muted);
-  font-size: var(--font-size-small);
-}
-.hint.is-over-limit {
-  color: var(--color-danger);
-}
+
 input[type="text"],
 input[type="search"],
 textarea,
@@ -134,14 +108,57 @@ select:focus {
   border-color: var(--color-focus);
 }
 
+/* Upload form */
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  margin-bottom: var(--section-gap);
+}
+.upload-form .muted {
+  font-size: var(--font-size-small);
+}
+.form-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.form-header h1 {
+  margin: 0;
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-title);
+  line-height: 1.2;
+}
+.form-subtitle {
+  margin: 0;
+  color: var(--color-text-subtitle);
+}
+.form-section,
+.version-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3-5);
+}
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3-5);
+}
+.section-header h2 {
+  margin: 0;
+}
+
 /* Segmented control: full width on phones, sized to its labels above. */
 .mode-toggle {
+  flex: 1 1 100%;
   display: flex;
   gap: var(--space-0-5);
   padding: var(--space-1);
   background: var(--color-fill);
   border-radius: var(--radius-segmented);
-  margin-bottom: var(--space-4);
 }
 .mode-toggle label {
   flex: 1;
@@ -170,34 +187,451 @@ select:focus {
   outline: var(--focus-outline-width) solid var(--color-focus);
 }
 
-.options {
-  margin-bottom: var(--space-4);
-}
-.options summary {
-  cursor: pointer;
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-2);
-}
-.counts {
-  border-collapse: collapse;
-  margin: var(--space-2) 0;
-}
-.counts th,
-.counts td {
-  text-align: left;
-  padding: var(--space-1-5) var(--space-3) var(--space-1-5) 0;
-}
-.counts select {
-  width: auto;
-}
-.translate {
-  flex-direction: row;
+/* Drop zone: stacked and centred on phones, one row above. */
+.drop-zone {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+  gap: var(--space-2-5);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  background: var(--color-surface-subtle);
+  border: 1px dashed var(--border-dashed);
+  border-radius: var(--radius-large);
 }
-.translate select {
-  width: auto;
+.drop-zone.is-dragging {
+  background: var(--color-fill);
+  border-color: var(--color-focus);
+}
+.drop-zone-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--icon-tile-size);
+  height: var(--icon-tile-size);
+  background: var(--color-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-control);
+}
+.drop-zone-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  min-width: 0;
+}
+.drop-zone-title {
+  font-weight: var(--font-weight-medium);
+  overflow-wrap: anywhere;
+}
+/* Phones can't drop files, so the title only shows a chosen file. */
+.drop-zone:not(.has-file) .drop-zone-title {
+  display: none;
+}
+.drop-zone button {
+  font-size: var(--font-size-body);
+}
+
+/* Fields: a label row (label, note, info tip) above each control. */
+.article-fields {
+  display: grid;
+  gap: var(--space-3-5);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.field-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  /* As tall as an info button, so fields with and without one line up. */
+  min-height: var(--info-button-size);
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-semibold);
+}
+.label-note {
+  margin-left: var(--space-1-5);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+}
+.label-note.is-over-limit {
+  color: var(--color-danger);
+}
+.hide-on-phone {
+  display: none;
+}
+.field-error {
+  margin: var(--space-1-5) 0 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-small);
+}
+
+/* Info tips. The tooltip lines up with the field's label row, not the
+   small button, so it stays inside the page on phones. */
+.info-tip {
+  display: inline-flex;
+}
+.info-button {
+  width: var(--info-button-size);
+  height: var(--info-button-size);
+  min-height: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  cursor: help;
+}
+.info-button:hover,
+.info-tip.is-open .info-button {
+  color: var(--color-text);
+  background: var(--color-fill);
+}
+.tooltip {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  bottom: calc(100% + var(--space-2));
+  left: 0;
+  width: var(--tooltip-width);
+  max-width: calc(100vw - 2 * var(--page-gutter));
+  padding: var(--space-2-5) var(--space-3);
+  color: var(--color-text-on-dark);
+  background: var(--color-tooltip);
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-popover);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tooltip);
+  text-align: left;
+}
+/* Covers the gap down to the button, so the pointer can move onto the
+   tooltip without closing it. */
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: var(--space-2);
+}
+.tooltip.is-end-aligned {
+  left: auto;
+  right: 0;
+}
+.info-tip.is-open .tooltip {
+  display: block;
+}
+
+/* Select with a chevron */
+.select {
+  position: relative;
+}
+.select select {
+  appearance: none;
+  padding-right: calc(var(--space-3-5) + var(--space-6));
+  cursor: pointer;
+}
+.select svg {
+  position: absolute;
+  top: 50%;
+  right: var(--space-3-5);
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+/* Number stepper: − [ n ] + */
+.stepper {
+  display: flex;
+  height: var(--control-height);
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-control);
+}
+.stepper:has(input:focus) {
+  outline: var(--focus-outline-width) solid var(--color-focus);
+  outline-offset: 1px;
+  border-color: var(--color-focus);
+}
+.stepper button {
+  flex: none;
+  width: var(--stepper-button-width);
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+.stepper button:focus-visible {
+  outline: var(--focus-outline-width) solid var(--color-focus);
+  outline-offset: calc(-1 * var(--focus-outline-width));
+}
+.stepper button[aria-disabled="true"] {
+  opacity: var(--opacity-disabled);
+  background: var(--color-surface);
+  cursor: not-allowed;
+}
+.stepper input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--font-size-control);
+  color: var(--color-text);
+  text-align: center;
+  background: var(--color-surface);
+  border: 0;
+  border-left: 1px solid var(--border-divider);
+  border-right: 1px solid var(--border-divider);
+  appearance: textfield;
+}
+.stepper input:focus {
+  outline: none;
+}
+.stepper input::-webkit-inner-spin-button,
+.stepper input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* Switch: the knob sits left when off and right when aria-checked. */
+.switch {
+  position: relative;
+  flex: none;
+  width: var(--switch-width);
+  height: var(--switch-height);
+  min-height: 0;
+  padding: 0;
+  background: var(--color-switch-off);
+  border: 0;
+  border-radius: var(--radius-pill);
+}
+.switch[aria-checked="true"] {
+  background: var(--color-switch-on);
+}
+.switch:focus-visible {
+  outline: var(--focus-outline-width) solid var(--color-focus);
+  outline-offset: var(--focus-outline-width);
+}
+.switch-knob {
+  position: absolute;
+  top: calc((var(--switch-height) - var(--switch-knob-size)) / 2);
+  left: calc((var(--switch-height) - var(--switch-knob-size)) / 2);
+  width: var(--switch-knob-size);
+  height: var(--switch-knob-size);
+  background: var(--color-surface);
+  border-radius: 50%;
+  box-shadow: var(--shadow-knob);
+}
+.switch[aria-checked="true"] .switch-knob {
+  left: calc(
+    var(--switch-width) - var(--switch-knob-size) -
+      (var(--switch-height) - var(--switch-knob-size)) / 2
+  );
+}
+
+.icon-button {
+  flex: none;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  min-height: 0;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-icon-button);
+}
+
+/* Image picker */
+.add-image {
+  justify-content: flex-start;
+  gap: var(--space-2-5);
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 var(--space-3-5);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-regular);
+  background: var(--color-surface-subtle);
+  border: 1px dashed var(--border-dashed);
+}
+.image-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  height: var(--control-height);
+  padding: 0 var(--space-1-5);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-control);
+}
+.image-thumbnail {
+  flex: none;
+  width: var(--thumbnail-size);
+  height: var(--thumbnail-size);
+  object-fit: cover;
+  background: var(--color-image-placeholder);
+  border-radius: var(--radius-thumbnail);
+}
+.image-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-control);
+}
+.image-remove {
+  width: var(--small-icon-button-size);
+  height: var(--small-icon-button-size);
+}
+
+/* Version cards. Collapsed, a card shows only its header, with a
+   one-line summary of its options. */
+.version-card {
+  background: var(--color-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-card);
+}
+.version-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2-5) var(--space-1-5) var(--space-2-5) var(--space-4);
+}
+.version-card:not(.is-collapsed) .version-header {
+  border-bottom: 1px solid var(--border-divider);
+}
+.version-heading {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+.version-title {
+  margin: 0;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: var(--chip-height);
+  padding: 0 var(--space-2-5);
+  color: var(--color-text-chip);
+  background: var(--color-fill);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-small);
+}
+.version-summary {
+  flex-basis: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+.version-card:not(.is-collapsed) .version-summary,
+.version-card.is-collapsed .version-options {
+  display: none;
+}
+.version-card.is-collapsed .collapse-button svg {
+  transform: rotate(180deg);
+}
+.version-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-1);
+}
+.version-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "grade grade"
+    "questions terms"
+    "translation translation"
+    "image image";
+  gap: var(--space-4) var(--space-3);
+}
+.field-grade {
+  grid-area: grade;
+}
+.field-questions {
+  grid-area: questions;
+}
+.field-terms {
+  grid-area: terms;
+}
+.field-translation {
+  grid-area: translation;
+}
+.field-image {
+  grid-area: image;
+}
+.toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 var(--space-3);
+  min-height: var(--toggle-row-min-height);
+  padding: var(--space-1-5) 0;
+  border-top: 1px solid var(--border-divider);
+}
+.toggle-row .field-label {
+  margin: 0;
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-regular);
+}
+.toggle-note {
+  flex-basis: 100%;
+  margin: 0 0 var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+.add-version {
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--add-button-height);
+  font-size: var(--font-size-body);
+  border-style: dashed;
+  border-color: var(--border-dashed);
+  border-radius: var(--radius-card);
+}
+.maximum-note {
+  margin: var(--space-1) 0 0;
+  text-align: center;
+}
+
+/* Footer: sticky and full-bleed on phones, so Create stays in reach. */
+.form-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0 calc(-1 * var(--page-gutter));
+  padding: var(--space-3) var(--page-gutter) var(--space-5);
+  background: var(--color-page);
+  border-top: 1px solid var(--border-divider);
+}
+.form-footer .primary {
+  width: 100%;
+}
+.form-error {
+  margin: 0;
+}
+.footer-note {
+  text-align: center;
 }
 
 button,
@@ -217,8 +651,9 @@ a.button {
   text-decoration: none;
   cursor: pointer;
 }
-button:hover:not(:disabled),
-a.button:hover {
+/* :where() keeps this at zero specificity, so components such as the
+   switch keep their own colors on hover. */
+:where(button:hover:not(:disabled), a.button:hover) {
   background: var(--color-hover);
   color: var(--color-text);
 }
@@ -461,7 +896,19 @@ button.danger {
   .card {
     padding: var(--space-5) var(--space-6);
   }
+  .list-header input {
+    max-width: var(--search-max-width);
+  }
+
+  .form-header {
+    gap: var(--space-1-5);
+  }
+  .form-section,
+  .version-list {
+    gap: var(--space-4);
+  }
   .mode-toggle {
+    flex: none;
     display: inline-flex;
   }
   .mode-toggle label {
@@ -469,7 +916,95 @@ button.danger {
     padding: 0 var(--space-4);
     font-size: var(--font-size-label);
   }
-  .list-header input {
-    max-width: var(--search-max-width);
+  .drop-zone {
+    flex-direction: row;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    text-align: left;
+  }
+  .drop-zone-text {
+    flex: 1;
+  }
+  .drop-zone:not(.has-file) .drop-zone-title {
+    display: inline;
+  }
+  .drop-zone button {
+    font-size: var(--font-size-label);
+  }
+  .article-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .hide-on-phone {
+    display: inline;
+  }
+
+  .version-header {
+    gap: var(--space-3);
+    padding: var(--space-3-5) var(--space-4) var(--space-3-5) var(--space-5);
+  }
+  .version-heading {
+    gap: var(--space-1-5) var(--space-3);
+  }
+  .version-summary {
+    flex-basis: auto;
+  }
+  .version-options {
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-5) var(--space-2);
+  }
+  .version-fields {
+    grid-template-areas:
+      "grade image"
+      "questions terms"
+      "translation translation";
+    gap: var(--space-4);
+  }
+  .toggle-row {
+    gap: 0 var(--space-4);
+  }
+
+  .form-footer {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin: 0;
+    padding: var(--space-6) 0 0;
+  }
+  .form-footer .primary {
+    width: auto;
+  }
+  .form-error {
+    flex-basis: 100%;
+    order: -2;
+  }
+  .footer-note {
+    order: -1;
+    text-align: left;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .article-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .field-title {
+    grid-column: span 2;
+  }
+  .version-header {
+    padding: var(--space-4) var(--space-5);
+  }
+  .version-heading {
+    flex-wrap: nowrap;
+  }
+  .version-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      "grade questions terms"
+      "translation translation image";
   }
 }

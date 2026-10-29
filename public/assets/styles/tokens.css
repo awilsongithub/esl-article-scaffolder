@@ -100,6 +100,9 @@
   --add-button-height: 52px;
   --segment-height: 40px;
   --icon-button-size: 44px;
+  --small-icon-button-size: 36px;
+  --stepper-button-width: 44px;
+  --thumbnail-size: 32px;
   --icon-tile-size: 44px;
   --info-button-size: 28px;
   --switch-width: 48px;
@@ -139,7 +142,6 @@
 
   /* Kept from before the mockups: the list and detail pages. */
   --page-max-width: 920px;
-  --field-min-width: 220px;
   --search-max-width: 280px;
   --level-card-min-width: 240px;
   --spinner-size: 14px;
